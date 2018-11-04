@@ -1,4 +1,6 @@
 import unittest
+import datetime
+
 from hamcrest import assert_that, not_none, equal_to, none, contains
 from freemind.map import MapReader, Icons
 
@@ -41,6 +43,12 @@ class TestMapReader(unittest.TestCase):
             assert_that((mmap.root().text()), equal_to("foo"))
             assert_that((mmap.root().branch(0).text()), none())
             assert_that((mmap.root().branch(1).text()), equal_to("bar"))
+
+    def test_reads_creation_timestamp(self):
+            map_text = '<map><node TEXT="foo" CREATED="1541258689450"><node></node><node TEXT="bar"></node></node></map>'
+            mmap = MapReader().read(map_text)
+            assert_that((mmap.root().created), equal_to(datetime.datetime(2018,11,3,15,24,49,450000)))
+
 
 
 

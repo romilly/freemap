@@ -1,3 +1,4 @@
+from datetime import datetime
 from lxml import etree
 
 from freemind.uuids import UUIDGenerator
@@ -21,9 +22,10 @@ class Icons(object):
 
 
 class MapElement():
-    def __init__(self, id=None):
+    def __init__(self, id=None, created=None):
         self._children = []
         self.id = id if id else UUIDGenerator.nextUUID()
+        self.created = datetime.fromtimestamp(int(created)/1000.0) if created else datetime.now()
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -42,8 +44,8 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, text, icons, link, note):
-        MapElement.__init__(self, id)
+    def __init__(self, id, created, text, icons, link, note):
+        MapElement.__init__(self, id, created)
         self._text = text
         self._icons = icons
         self._link = link
@@ -77,6 +79,7 @@ class MapReader():
             if child_xml.tag == 'node':
                 child = parent.add_child(
                     Branch(child_xml.get('ID'),
+                           child_xml.get('CREATED'),
                            child_xml.get('TEXT'),
                            self.icons_in(child_xml),
                            child_xml.get('LINK'),
