@@ -44,7 +44,7 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, created, text, icons, link, note):
+    def __init__(self, id, created, text, link, icons, note):
         MapElement.__init__(self, id, created)
         self._text = text
         self._icons = icons
@@ -81,8 +81,8 @@ class MapReader():
                     Branch(child_xml.get('ID'),
                            child_xml.get('CREATED'),
                            child_xml.get('TEXT'),
-                           self.icons_in(child_xml),
                            child_xml.get('LINK'),
+                           self.icons_in(child_xml),
                            self.get_note_from(child_xml)))
                 self.add_children_from_xml(child_xml, child)
         return parent
