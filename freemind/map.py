@@ -12,13 +12,13 @@ class Icon():
 
 
 class Icons(object):
-    icons = {}
+    icon_dict = {}
 
     @classmethod
     def icon(cls, name):
-        if name not in cls.icons:
-            cls.icons[name] = Icon(name)
-        return cls.icons[name]
+        if name not in cls.icon_dict:
+            cls.icon_dict[name] = Icon(name)
+        return cls.icon_dict[name]
 
 
 class MapElement():
