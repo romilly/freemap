@@ -12,14 +12,14 @@ class TestMapReader(unittest.TestCase):
             mmap = MapReader().read('<map><node/></map>')
             assert_that(mmap.root(), not_none())
 
-    def test_genereates_node_id_if_missing(self):
+    def test_generates_node_id_if_missing(self):
         mmap = MapReader().read('<map><node/></map>')
         assert_that(mmap.root().id, not_none())
 
     def test_uses_node_id_if_present(self):
-        id = "Freemind_Link_1331878192"
-        mmap = MapReader().read('<map><node ID="%s"/></map>' % id)
-        assert_that(mmap.root().id, equal_to(id))
+        node_id = "Freemind_Link_1331878192"
+        mmap = MapReader().read('<map><node ID="%s"/></map>' % node_id)
+        assert_that(mmap.root().id, equal_to(node_id))
 
 
     def test_reads_branches(self):
@@ -44,10 +44,11 @@ class TestMapReader(unittest.TestCase):
             assert_that((mmap.root().branch(0).text()), none())
             assert_that((mmap.root().branch(1).text()), equal_to("bar"))
 
-    def test_reads_creation_timestamp(self):
-            map_text = '<map><node TEXT="foo" CREATED="1541258689450"><node></node><node TEXT="bar"></node></node></map>'
+    def test_reads_timestamps(self):
+            map_text = '<map><node TEXT="foo" CREATED="1541258689450" MODIFIED="1541353381000"><node></node><node TEXT="bar"></node></node></map>'
             mmap = MapReader().read(map_text)
-            assert_that((mmap.root().created), equal_to(datetime.datetime(2018,11,3,15,24,49,450000)))
+            assert_that((mmap.root().created()), equal_to(datetime.datetime(2018,11,3,15,24,49,450000)))
+            assert_that((mmap.root().modified()), equal_to(datetime.datetime(2018,11,4,17,43,1,0)))
 
 
 

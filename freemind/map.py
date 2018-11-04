@@ -22,10 +22,14 @@ class Icons(object):
 
 
 class MapElement():
-    def __init__(self, id=None, created=None):
+    def __init__(self, id=None, created=None, modified=None):
         self._children = []
         self.id = id if id else UUIDGenerator.nextUUID()
-        self.created = datetime.fromtimestamp(int(created)/1000.0) if created else datetime.now()
+        self._created = self.datetime_from_timestamp_default_now(created)
+        self._modified = self.datetime_from_timestamp_default_now(modified)
+
+    def datetime_from_timestamp_default_now(self, timestamp_in_milliseconds):
+        return datetime.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else datetime.now()
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -37,6 +41,12 @@ class MapElement():
     def branch(self, index):
         return self.branches()[index]
 
+    def created(self):
+        return self._created
+
+    def modified(self):
+        return self._modified
+
 
 class Map(MapElement):
     def root(self):
@@ -44,8 +54,8 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, created, text, link, icons, note):
-        MapElement.__init__(self, id, created)
+    def __init__(self, id, created, modified, text, link, icons, note):
+        MapElement.__init__(self, id, created, modified)
         self._text = text
         self._icons = icons
         self._link = link
@@ -80,6 +90,7 @@ class MapReader():
                 child = parent.add_child(
                     Branch(child_xml.get('ID'),
                            child_xml.get('CREATED'),
+                           child_xml.get('MODIFIED'),
                            child_xml.get('TEXT'),
                            child_xml.get('LINK'),
                            self.icons_in(child_xml),
