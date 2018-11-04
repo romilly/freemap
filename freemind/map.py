@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime as dt
 from lxml import etree
 
 from freemind.uuids import UUIDGenerator
@@ -29,7 +29,7 @@ class MapElement():
         self._modified = self.datetime_from_timestamp_default_now(modified)
 
     def datetime_from_timestamp_default_now(self, timestamp_in_milliseconds):
-        return datetime.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else datetime.now()
+        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else dt.now()
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -54,12 +54,12 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, created, modified, text, link, icons, note):
+    def __init__(self, id, created, modified):
         MapElement.__init__(self, id, created, modified)
-        self._text = text
-        self._icons = icons
-        self._link = link
-        self._note = note
+        self._text = None
+        self._icons = []
+        self._link = None
+        self._note = None
 
     def text(self):
         return self._text
@@ -72,6 +72,18 @@ class Branch(MapElement):
 
     def note(self):
         return self._note
+
+    def set_text(self, text):
+        self._text = text
+
+    def set_link(self, link):
+        self._link = link
+
+    def set_icons(self, icons):
+        self._icons = icons
+
+    def set_note(self, note):
+        self._note = note
 
 
 class MapReader():
@@ -87,14 +99,14 @@ class MapReader():
     def add_children_from_xml(self, xml_node, parent):
         for child_xml in xml_node:
             if child_xml.tag == 'node':
-                child = parent.add_child(
-                    Branch(child_xml.get('ID'),
+                new_branch = Branch(child_xml.get('ID'),
                            child_xml.get('CREATED'),
-                           child_xml.get('MODIFIED'),
-                           child_xml.get('TEXT'),
-                           child_xml.get('LINK'),
-                           self.icons_in(child_xml),
-                           self.get_note_from(child_xml)))
+                           child_xml.get('MODIFIED'))
+                new_branch.set_text(child_xml.get('TEXT'))
+                new_branch.set_link(child_xml.get('LINK'))
+                new_branch.set_icons(self.icons_in(child_xml))
+                new_branch.set_note(self.get_note_from(child_xml))
+                child = parent.add_child(new_branch)
                 self.add_children_from_xml(child_xml, child)
         return parent
 
