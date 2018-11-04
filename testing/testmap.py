@@ -10,6 +10,16 @@ class TestMapReader(unittest.TestCase):
             mmap = MapReader().read('<map><node/></map>')
             assert_that(mmap.root(), not_none())
 
+    def test_genereates_node_id_if_missing(self):
+        mmap = MapReader().read('<map><node/></map>')
+        assert_that(mmap.root().id, not_none())
+
+    def test_uses_node_id_if_present(self):
+        id = "Freemind_Link_1331878192"
+        mmap = MapReader().read('<map><node ID="%s"/></map>' % id)
+        assert_that(mmap.root().id, equal_to(id))
+
+
     def test_reads_branches(self):
             mmap = MapReader().read('<map><node><node></node><icon BUILTIN="button_ok"/><node></node></node></map>')
             assert_that(len(mmap.root().branches()), equal_to(2))

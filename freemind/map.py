@@ -1,5 +1,7 @@
 from lxml import etree
 
+from freemind.uuids import UUIDGenerator
+
 __author__ = 'romilly'
 
 
@@ -19,15 +21,16 @@ class Icons(object):
 
 
 class MapElement():
-    def __init__(self):
-        self._branches = []
+    def __init__(self, id=None):
+        self._children = []
+        self.id = id if id else UUIDGenerator.nextUUID()
 
-    def add_branch(self, branch):
-        self._branches.append(branch)
+    def add_child(self, branch):
+        self._children.append(branch)
         return branch
 
     def branches(self):
-        return self._branches
+        return self._children
 
     def branch(self, index):
         return self.branches()[index]
@@ -39,8 +42,8 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, text, icons, link, note):
-        MapElement.__init__(self)
+    def __init__(self, id, text, icons, link, note):
+        MapElement.__init__(self, id)
         self._text = text
         self._icons = icons
         self._link = link
@@ -64,23 +67,30 @@ class MapReader():
         pass
 
     def read(self, map_text):
-        fm = etree.XML(map_text)
-        root = Map()
-        self.convert(fm, root)
-        return root
+        return self.build_map_from_xml(etree.XML(map_text))
 
-    def convert(self, xml_node, parent):
-        for child in xml_node:
-            if child.tag == 'node':
-                branch = parent.add_branch(
-                    Branch(child.get('TEXT'), self.icons_in(child), child.get('LINK'), self.get_note_from(child)))
-                self.convert(child, branch)
+    def build_map_from_xml(self, fm):
+        return self.add_children_from_xml(fm, Map())
 
+    def add_children_from_xml(self, xml_node, parent):
+        for child_xml in xml_node:
+            if child_xml.tag == 'node':
+                child = parent.add_child(
+                    Branch(child_xml.get('ID'),
+                           child_xml.get('TEXT'),
+                           self.icons_in(child_xml),
+                           child_xml.get('LINK'),
+                           self.get_note_from(child_xml)))
+                self.add_children_from_xml(child_xml, child)
+        return parent
+
+    @classmethod
     def icons_in(self, child):
         return [Icons.icon(icon.get('BUILTIN')) for icon in child.findall('icon')]
 
-    def get_note_from(self, child):
-        rich_content = child.find('richcontent')
+    @classmethod
+    def get_note_from(self, child_xml):
+        rich_content = child_xml.find('richcontent')
         if rich_content is None:
             return None
         return etree.tostring(rich_content.find('html'))
