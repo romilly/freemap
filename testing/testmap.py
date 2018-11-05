@@ -41,7 +41,7 @@ class TestMapReader(unittest.TestCase):
     def test_reads_branch_text(self):
             mmap = MapReader().read('<map><node TEXT="foo"><node></node><node TEXT="bar"></node></node></map>')
             assert_that((mmap.root().text()), equal_to("foo"))
-            assert_that((mmap.root().branch(0).text()), none())
+            assert_that((mmap.root().branch(0).text()), equal_to(""))
             assert_that((mmap.root().branch(1).text()), equal_to("bar"))
 
     def test_reads_timestamps(self):
