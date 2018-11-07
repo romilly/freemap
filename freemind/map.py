@@ -54,9 +54,9 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, created, modified, text):
+    def __init__(self, id, created, modified):
         MapElement.__init__(self, id, created, modified)
-        self._text = text if text else ''
+        self._text = ''
         self._icons = []
         self._link = None
         self._note = None
@@ -73,8 +73,8 @@ class Branch(MapElement):
     def note(self):
         return self._note
 
-    # def set_text(self, text):
-    #     self._text = text
+    def set_text(self, text):
+        self._text = text if text else ''
 
     def set_link(self, link):
         self._link = link
@@ -101,9 +101,8 @@ class MapReader():
             if child_xml.tag == 'node':
                 new_branch = Branch(child_xml.get('ID'),
                            child_xml.get('CREATED'),
-                           child_xml.get('MODIFIED'),
-                           child_xml.get('TEXT'))
-                # new_branch.set_text(child_xml.get('TEXT'))
+                           child_xml.get('MODIFIED'))
+                new_branch.set_text(child_xml.get('TEXT'))
                 new_branch.set_link(child_xml.get('LINK'))
                 new_branch.set_icons(self.icons_in(child_xml))
                 new_branch.set_note(self.get_note_from(child_xml))

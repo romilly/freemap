@@ -51,5 +51,8 @@ class TestMapReader(unittest.TestCase):
             assert_that((mmap.root().modified()), equal_to(datetime.datetime(2018,11,4,17,43,1,0)))
 
 
+    # def test_reads_links(self):
+
+
 
 
