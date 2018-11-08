@@ -22,14 +22,14 @@ class Icons(object):
 
 
 class MapElement():
-    def __init__(self, id=None, created=None, modified=None):
+    def __init__(self, id=None):
         self._children = []
         self.id = id if id else UUIDGenerator.nextUUID()
-        self._created = self.datetime_from_timestamp_default_now(created)
-        self._modified = self.datetime_from_timestamp_default_now(modified)
+        self._created = dt.now()
+        self._modified = dt.now()
 
-    def datetime_from_timestamp_default_now(self, timestamp_in_milliseconds):
-        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else dt.now()
+    def datetime(self, timestamp_in_milliseconds):
+        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0)
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -40,6 +40,12 @@ class MapElement():
 
     def branch(self, index):
         return self.branches()[index]
+
+    def set_created(self, ts):
+        self._created = ts
+
+    def set_modified(self, ts):
+        self._modified = ts
 
     def created(self):
         return self._created
@@ -54,8 +60,8 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, id, created, modified):
-        MapElement.__init__(self, id, created, modified)
+    def __init__(self, id):
+        MapElement.__init__(self, id)
         self._text = ''
         self._icons = []
         self._link = None
@@ -99,9 +105,9 @@ class MapReader():
     def add_children_from_xml(self, xml_node, parent):
         for child_xml in xml_node:
             if child_xml.tag == 'node':
-                new_branch = Branch(child_xml.get('ID'),
-                           child_xml.get('CREATED'),
-                           child_xml.get('MODIFIED'))
+                new_branch = Branch(child_xml.get('ID'))
+                new_branch.set_created(self.datetime(child_xml.get('CREATED')))
+                new_branch.set_modified(self.datetime(child_xml.get('MODIFIED')))
                 new_branch.set_text(child_xml.get('TEXT'))
                 new_branch.set_link(child_xml.get('LINK'))
                 new_branch.set_icons(self.icons_in(child_xml))
@@ -109,6 +115,11 @@ class MapReader():
                 child = parent.add_child(new_branch)
                 self.add_children_from_xml(child_xml, child)
         return parent
+
+    @classmethod
+    def datetime(self, timestamp_in_milliseconds):
+        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
+
 
     @classmethod
     def icons_in(self, child):
