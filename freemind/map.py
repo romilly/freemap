@@ -65,7 +65,7 @@ class Branch(MapElement):
         self._text = ''
         self._icons = []
         self._link = None
-        self._note = None
+        self._note = ''
 
     def text(self):
         return self._text
@@ -86,10 +86,10 @@ class Branch(MapElement):
         self._link = link
 
     def set_icons(self, icons):
-        self._icons = icons
+        self._icons = icons if icons else []
 
     def set_note(self, note):
-        self._note = note
+        self._note = note if note else ''
 
 
 class MapReader():
