@@ -28,9 +28,6 @@ class MapElement():
         self._created = dt.now()
         self._modified = dt.now()
 
-    def datetime(self, timestamp_in_milliseconds):
-        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0)
-
     def add_child(self, branch):
         self._children.append(branch)
         return branch
@@ -119,7 +116,6 @@ class MapReader():
     @classmethod
     def datetime(self, timestamp_in_milliseconds):
         return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
-
 
     @classmethod
     def icons_in(self, child):
