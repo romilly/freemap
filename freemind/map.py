@@ -36,13 +36,14 @@ class Map():
 class Branch(MapElement):
     def __init__(self, id):
         MapElement.__init__(self, id)
-        self._text = ''
-        self._icons = []
-        self._link = None
-        self._note = ''
+        self._attributes = {}
+        self.set_text('')
+        self.set_icons([])
+        self.set_link(None)
+        self.set_note('')
         self._children = []
-        self._created = dt.now()
-        self._modified = dt.now()
+        self.set_created(dt.now())
+        self.set_modified(dt.now())
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -54,43 +55,48 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
-
     def set_created(self, ts):
-        self._created = ts
-
+        self.set('CREATED', ts)
 
     def set_modified(self, ts):
-        self._modified = ts
+        self.set('MODIFIED',ts)
 
     def created(self):
-        return self._created
+        return self.get('CREATED')
 
 
     def modified(self):
-        return self._modified
+        return self.get('MODIFIED')
 
     def text(self):
-        return self._text
+        return self.get('TEXT')
 
     def icons(self):
-        return self._icons
+        return self.get('ICONS')
 
     def link(self):
-        return self._link
+        return self.get('LINK')
 
     def note(self):
-        return self._note
+        return self.get('NOTE')
 
     def set_text(self, text):
-        self._text = text if text else ''
+        self.set('TEXT', text if text else '')
 
     def set_link(self, link):
-        self._link = link
+        self.set('LINK',link)
 
     def set_icons(self, icons):
-        self._icons = icons if icons else []
+        self.set('ICONS', icons if icons else [])
 
     def set_note(self, note):
-        self._note = note if note else ''
+        self.set('NOTE', note if note else '')
+
+    def set(self, name, value):
+        self._attributes[name] = value
+
+    def get(self, name):
+        return self._attributes[name]
+
 
 
