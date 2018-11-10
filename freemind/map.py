@@ -1,8 +1,11 @@
 from datetime import datetime as dt
-
 from freemind.uuids import UUIDGenerator
 
 __author__ = 'romilly'
+
+
+def datetime(timestamp_in_milliseconds):
+    return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
 
 
 class Icon():
@@ -42,8 +45,8 @@ class Branch(MapElement):
         self.set_link(None)
         self.set_note('')
         self._children = []
-        self.set_created(dt.now())
-        self.set_modified(dt.now())
+        self.set_created(1000*dt.now().timestamp())
+        self.set_modified(1000*dt.now().timestamp())
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -55,15 +58,15 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
+
     def set_created(self, ts):
-        self.set('CREATED', ts)
+        self.set('CREATED', datetime(ts))
 
     def set_modified(self, ts):
-        self.set('MODIFIED',ts)
+        self.set('MODIFIED',datetime(ts))
 
     def created(self):
         return self.get('CREATED')
-
 
     def modified(self):
         return self.get('MODIFIED')

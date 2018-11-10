@@ -13,8 +13,9 @@ class MapReader():
     def build_node_from_xml(self, child_xml):
         if child_xml.tag == 'node':
             branch = Branch(child_xml.get('ID'))
-            branch.set_created(self.datetime(child_xml.get('CREATED')))
-            branch.set_modified(self.datetime(child_xml.get('MODIFIED')))
+            # TODO: move datetime stuff to setter
+            branch.set_created(child_xml.get('CREATED'))
+            branch.set_modified(child_xml.get('MODIFIED'))
             branch.set_text(child_xml.get('TEXT'))
             branch.set_link(child_xml.get('LINK'))
             branch.set_icons(self.icons_in(child_xml))
@@ -34,9 +35,6 @@ class MapReader():
                 self.add_children_from_xml(child_xml, child)
         return parent
 
-    @classmethod
-    def datetime(self, timestamp_in_milliseconds):
-        return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
 
     @classmethod
     def icons_in(self, child):
@@ -47,5 +45,5 @@ class MapReader():
         rich_content = child_xml.find('richcontent')
         if rich_content is None:
             return None
-        return etree.tostring(rich_content.find('html'))
+        return etree.tostring(rich_content.find('html'), encoding=str)
 
