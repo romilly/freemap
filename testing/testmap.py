@@ -2,7 +2,8 @@ import unittest
 import datetime
 
 from hamcrest import assert_that, not_none, equal_to, none, contains
-from freemind.map import MapReader, Icons
+from freemind.map import Icons
+from freemind.reader import MapReader
 
 __author__ = 'romilly'
 
