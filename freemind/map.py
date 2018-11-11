@@ -37,7 +37,7 @@ class Map():
 
 
 class Branch(MapElement):
-    def __init__(self, id):
+    def __init__(self, id, now):
         MapElement.__init__(self, id)
         self._attributes = {}
         self.set_text('')
@@ -45,8 +45,9 @@ class Branch(MapElement):
         self.set_link(None)
         self.set_note('')
         self._children = []
-        self.set_created(1000*dt.now().timestamp())
-        self.set_modified(1000*dt.now().timestamp())
+        timestamp_ms = 1000 * now.timestamp()
+        self.set_created(timestamp_ms)
+        self.set_modified(timestamp_ms)
 
     def add_child(self, branch):
         self._children.append(branch)

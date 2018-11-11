@@ -1,6 +1,6 @@
 from lxml import etree
-from datetime import datetime as dt
 from freemind.map import Branch, Icons, Map
+from datetime import datetime as dt
 
 
 class MapReader():
@@ -12,8 +12,7 @@ class MapReader():
 
     def build_node_from_xml(self, child_xml):
         if child_xml.tag == 'node':
-            branch = Branch(child_xml.get('ID'))
-            # TODO: move datetime stuff to setter
+            branch = Branch(child_xml.get('ID'), dt.now())
             branch.set_created(child_xml.get('CREATED'))
             branch.set_modified(child_xml.get('MODIFIED'))
             branch.set_text(child_xml.get('TEXT'))
