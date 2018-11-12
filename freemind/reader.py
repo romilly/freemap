@@ -14,11 +14,11 @@ class MapReader():
         if child_xml.tag == 'node':
             branch = Branch(child_xml.get('ID'), dt.now())
             branch.set_created(child_xml.get('CREATED'))
-            branch.set_modified(child_xml.get('MODIFIED'))
             branch.set_text(child_xml.get('TEXT'))
             branch.set_link(child_xml.get('LINK'))
             branch.set_icons(self.icons_in(child_xml))
             branch.set_note(self.get_note_from(child_xml))
+            branch.set_modified(child_xml.get('MODIFIED'))
             return branch
 
     def build_map_from_xml(self, fm):

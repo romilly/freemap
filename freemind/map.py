@@ -5,7 +5,7 @@ __author__ = 'romilly'
 
 
 def datetime(timestamp_in_milliseconds):
-    return dt.fromtimestamp(int(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
+    return dt.fromtimestamp(float(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
 
 
 class Icon():
@@ -37,17 +37,22 @@ class Map():
 
 
 class Branch(MapElement):
-    def __init__(self, id, now):
+    def __init__(self, id, now=None):
         MapElement.__init__(self, id)
+        if now is None:
+            now = dt.now()
         self._attributes = {}
         self.set_text('')
         self.set_icons([])
         self.set_link(None)
         self.set_note('')
         self._children = []
-        timestamp_ms = 1000 * now.timestamp()
+        timestamp_ms = self.timestamp(now)
         self.set_created(timestamp_ms)
         self.set_modified(timestamp_ms)
+
+    def timestamp(self, now):
+        return 1000 * now.timestamp()
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -86,6 +91,7 @@ class Branch(MapElement):
 
     def set_text(self, text):
         self.set('TEXT', text if text else '')
+        self.set_modified(self.timestamp(dt.now()))
 
     def set_link(self, link):
         self.set('LINK',link)
