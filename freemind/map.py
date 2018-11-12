@@ -37,17 +37,15 @@ class Map():
 
 
 class Branch(MapElement):
-    def __init__(self, id, now=None):
+    def __init__(self, id):
         MapElement.__init__(self, id)
-        if now is None:
-            now = dt.now()
         self._attributes = {}
         self.set_text('')
         self.set_icons([])
         self.set_link(None)
         self.set_note('')
         self._children = []
-        timestamp_ms = self.timestamp(now)
+        timestamp_ms = self.timestamp(dt.now())
         self.set_created(timestamp_ms)
         self.set_modified(timestamp_ms)
 

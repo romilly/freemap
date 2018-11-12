@@ -12,7 +12,7 @@ class MapReader():
 
     def build_node_from_xml(self, child_xml):
         if child_xml.tag == 'node':
-            branch = Branch(child_xml.get('ID'), dt.now())
+            branch = Branch(child_xml.get('ID'))
             branch.set_created(child_xml.get('CREATED'))
             branch.set_text(child_xml.get('TEXT'))
             branch.set_link(child_xml.get('LINK'))

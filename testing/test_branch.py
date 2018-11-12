@@ -24,19 +24,19 @@ def between(low, high):
 
 
 class BranchTester(unittest.TestCase):
-    # def setUp(self):
-    #     self.now = datetime(2018,11,10,1,2,3,456000) # constructor expects microseconds
 
     def test_knows_when_created(self):
         before = dt.now()
-        self.branch = Branch('Any Id')
+        branch = Branch('Any Id')
         after = dt.now()
-        assert_that(self.branch.created(), between(before, after))
+        assert_that(branch.created(), between(before, after))
 
-    # def test_knows_when_core_attribute_modified(self):
-    #     assert_that(self.branch.modified(), equal_to(self.now))
-    #     test_time = datetime.now()
-    #     self.branch.set_text('foo')
-    #     td = self.branch.modified() - test_time
-    #     assert_that(abs(td), less_than(timedelta(milliseconds=10)))
+    def test_knows_when_text_modified(self):
+        branch = Branch('Any Id')
+        before = dt.now()
+        branch.set_text('foo')
+        after = dt.now()
+        assert_that(branch.modified(), between(before, after))
+
+
 
