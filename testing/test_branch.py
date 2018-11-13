@@ -3,7 +3,7 @@ import unittest
 from hamcrest import assert_that, equal_to, less_than, all_of, greater_than
 from hamcrest.core.base_matcher import BaseMatcher
 
-from freemind.map import Branch
+from freemind.map import Branch, Icon, Icons
 from datetime import datetime as dt
 
 
@@ -31,12 +31,18 @@ class BranchTester(unittest.TestCase):
         after = dt.now()
         assert_that(branch.created(), between(before, after))
 
-    def test_knows_when_text_modified(self):
+    def test_knows_when_attribute_modified(self):
         branch = Branch('Any Id')
-        before = dt.now()
-        branch.set_text('foo')
-        after = dt.now()
-        assert_that(branch.modified(), between(before, after))
+        t1 = dt.now()
+        branch.set_link('foo')
+        t2 = dt.now()
+        assert_that(branch.modified(), between(t1, t2))
+        branch.set_icons([Icons.icon('foo')])
+        t3 = dt.now()
+        assert_that(branch.modified(), between(t2, t3))
+        branch.set_note('bar')
+        t4 = dt.now()
+        assert_that(branch.modified(), between(t3, t4))
 
 
 

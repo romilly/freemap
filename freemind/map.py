@@ -1,6 +1,8 @@
 from datetime import datetime as dt
 from freemind.uuids import UUIDGenerator
 
+MODIFIED = 'MODIFIED'
+
 __author__ = 'romilly'
 
 
@@ -47,7 +49,6 @@ class Branch(MapElement):
         self._children = []
         timestamp_ms = self.timestamp(dt.now())
         self.set_created(timestamp_ms)
-        self.set_modified(timestamp_ms)
 
     def timestamp(self, now):
         return 1000 * now.timestamp()
@@ -62,12 +63,11 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
-
     def set_created(self, ts):
         self.set('CREATED', datetime(ts))
 
     def set_modified(self, ts):
-        self.set('MODIFIED',datetime(ts))
+        self._attributes[MODIFIED] = datetime(ts)
 
     def created(self):
         return self.get('CREATED')
@@ -89,7 +89,6 @@ class Branch(MapElement):
 
     def set_text(self, text):
         self.set('TEXT', text if text else '')
-        self.set_modified(self.timestamp(dt.now()))
 
     def set_link(self, link):
         self.set('LINK',link)
@@ -102,6 +101,8 @@ class Branch(MapElement):
 
     def set(self, name, value):
         self._attributes[name] = value
+        if name != MODIFIED:
+            self._attributes[MODIFIED] = dt.now()
 
     def get(self, name):
         return self._attributes[name]
