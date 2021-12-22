@@ -2,3 +2,7 @@
 /.idea/sonarlint/*
 /tests/freeplane/1.7.x/logs/
 /tests/freeplane/1.9.x/logs/
+/tests/freeplane/1.7.x/accelerator.properties
+/tests/freeplane/1.7.x/auto.mmfilter
+/tests/freeplane/1.7.x/formats.xml
+/tests/freeplane/1.7.x/scanner.xml
