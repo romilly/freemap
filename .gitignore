@@ -1,2 +1,4 @@
 *.pyc
 /.idea/sonarlint/*
+/tests/freeplane/1.7.x/logs/
+/tests/freeplane/1.9.x/logs/
