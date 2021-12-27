@@ -33,11 +33,11 @@ class Xdo:
         params = [self.path_to_app] + list(self.app_params)
         print('opening app with %s' % params)
         subprocess.Popen(params
-                         ,stdout=so, stderr=so
+                  #       ,stdout=so, stderr=so
                          )
 
     def export_png(self):
-        subprocess.call(["xdotool", "search", "--name", self.window_name, "windowactivate"])
+        self.activate_window()
         subprocess.call(["xdotool", "key", "alt+f", "alt+e", "Return"])
 
     def open_map(self, name):
@@ -46,10 +46,6 @@ class Xdo:
         subprocess.call(["xdotool", "key", "ctrl+o", "type", name,])
         subprocess.call(["xdotool", "key","Return"])
 
-    # def close_current_map(self):
-    #     subprocess.call(["xdotool", "search", "--name", self.window_name, "windowactivate"])
-    #     sleep(0.1)
-    #     subprocess.call(["xdotool", "key", "Escape", "ctrl+w"])
 
     def quit_app(self):
         self.activate_window()
@@ -63,20 +59,19 @@ class Xdo:
 xdo = Xdo('Freeplane', FREEPLANE, '-U%s' % PROJECT_HOME, '%s/data/Mindmap.mm' % PROJECT_HOME)
 xdo.open_app()
 sleep(5)
-# # xdo.wait_for_window()
-#
-# xdo.open_map('Mindmap.mm')
-xdo.export_png()
-#
-#
-# xdo.open_map('test1.mm')
-# #sleep(1)
+
 # xdo.export_png()
 # #
-# # # xdo.close_current_map()
-# # sleep(2)
-# print('closing app')
-# xdo.quit_app()
+# #
+xdo.open_map('test1.mm')
+# sleep(1)
+xdo.export_png()
+
+xdo.open_map('Mindmap.mm')
+xdo.export_png()
+# # # sleep(2)
+# # print('closing app')
+xdo.quit_app()
 
 
 

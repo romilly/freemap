@@ -31,3 +31,5 @@ This too has its problems, and I've also encountered problems running freeplane 
 I now have a reliable way of opening and closing a freeplane session using subprocess. The next step is to automate 
 the opening of maps and capturing `png` images.
 
+Aaand it's finally working!
+
