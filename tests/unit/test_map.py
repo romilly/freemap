@@ -26,7 +26,6 @@ class TestMapReader(unittest.TestCase):
         mmap = map_from_string('<map><node ID="{nid}" {ts}/></map>'.format(nid=node_id, ts=self.ts))
         assert_that(mmap.root().id, equal_to(node_id))
 
-
     def test_reads_branches(self):
             map__format = '<map><node {ts}><node {ts}/></node></map>'.format(ts=self.ts)
             mmap = map_from_string(map__format)

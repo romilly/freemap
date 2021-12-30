@@ -30,11 +30,12 @@ class MapElement():
         self.id = id if id else UUIDGenerator.next_uuid()
 
 
+
 class Map():
     def __init__(self, root):
         self._root = root
 
-    def root(self):
+    def root(self) -> 'Branch':
         return self._root
 
 
