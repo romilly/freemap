@@ -4,7 +4,8 @@ from freemap.map import Branch, Icons, Map
 
 
 def map_from_string(map_text: str):
-    return build_map_from_xml(etree.XML(map_text))
+    doc = etree.XML(map_text)
+    return build_map_from_xml(doc)
 
 
 def build_node_from_xml(child_xml):
@@ -12,6 +13,7 @@ def build_node_from_xml(child_xml):
         branch = Branch(child_xml.get('ID'))
         branch.set_created(child_xml.get('CREATED'))
         branch.set_text(child_xml.get('TEXT'))
+        branch.set_localized_text(child_xml.get('LOCALIZED_TEXT'))
         branch.set_link(child_xml.get('LINK'))
         branch.set_icons(icons_in(child_xml))
         branch.set_note(get_note_from(child_xml))
@@ -19,9 +21,10 @@ def build_node_from_xml(child_xml):
         return branch
 
 
-def build_map_from_xml(fm):
-    root = build_node_from_xml(fm[0])
-    add_children_from_xml(fm[0], root)
+def build_map_from_xml(fm: etree.Element):
+    root_node_xml = fm.find('node')
+    root = build_node_from_xml(root_node_xml)
+    add_children_from_xml(root_node_xml, root)
     return Map(root)
 
 

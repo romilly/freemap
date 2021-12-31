@@ -1,21 +1,37 @@
+import os
+
 import datetime
 import unittest
 
+from hamcrest import is_not, none
 from hamcrest import assert_that, not_none, equal_to, contains_exactly
 
 from freemap.map import Icons
 from freemap.reader import map_from_string
+from freemap.helpers.files import read
 
-__author__ = 'romilly'
+
+TEST_DATA_DIRECTORY = 'data'
+
+
+def test_file(file_name: str) -> str:
+    return os.path.join(TEST_DATA_DIRECTORY, file_name)
 
 
 class TestMapReader(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
 
+    def test_reads_map(self):
+        map_text = read(test_file('Mindmap.mm'))
+        map = map_from_string(map_text)
+        assert_that(map, is_not(none()))
+        root_node = map.root()
+        assert_that(root_node.localized_text(), equal_to('new_mindmap'))
+
     def test_reads_root_node(self):
-            mmap = map_from_string('<map><node {ts}/></map>'.format(ts=self.ts))
-            assert_that(mmap.root(), not_none())
+        mmap = map_from_string('<map><node {ts}/></map>'.format(ts=self.ts))
+        assert_that(mmap.root(), not_none())
 
     def test_generates_node_id_if_missing(self):
         mmap = map_from_string('<map><node {ts}/></map>'.format(ts=self.ts))
@@ -49,7 +65,7 @@ class TestMapReader(unittest.TestCase):
                 .format(ts=self.ts)
             mmap = map_from_string(map_text)
             assert_that((mmap.root().text()), equal_to("foo"))
-            assert_that((mmap.root().branch(0).text()), equal_to(""))
+            assert_that((mmap.root().branch(0).text()), none())
             assert_that((mmap.root().branch(1).text()), equal_to("bar"))
 
     def test_reads_timestamps(self):
@@ -65,3 +81,8 @@ class TestMapReader(unittest.TestCase):
 
 
 
+
+
+
+if __name__ == '__main__':
+    unittest.main()

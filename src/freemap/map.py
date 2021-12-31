@@ -30,20 +30,23 @@ class MapElement():
         self.id = id if id else UUIDGenerator.next_uuid()
 
 
-
-class Map():
-    def __init__(self, root):
+class Map:
+    def __init__(self, root: 'Branch'):
         self._root = root
 
     def root(self) -> 'Branch':
         return self._root
 
+# TODO: note, description (currently missing) should contain None by default
+# since a mind map file might contain a note or description with no text or a note.. with empty text.
+
 
 class Branch(MapElement):
-    def __init__(self, id):
+    def __init__(self, id: str):
         MapElement.__init__(self, id)
         self._attributes = {}
-        self.set_text('')
+        self.set_text(None)
+        self.set_localized_text(None)
         self.set_icons([])
         self.set_link(None)
         self.set_note('')
@@ -76,6 +79,9 @@ class Branch(MapElement):
     def modified(self):
         return self.get('MODIFIED')
 
+    def localized_text(self):
+        return self.get('LOCALIZED_TEXT')
+
     def text(self):
         return self.get('TEXT')
 
@@ -89,7 +95,10 @@ class Branch(MapElement):
         return self.get('NOTE')
 
     def set_text(self, text):
-        self.set('TEXT', text if text else '')
+        self.set('TEXT', text)
+
+    def set_localized_text(self, text):
+        self.set('LOCALIZED_TEXT', text)
 
     def set_link(self, link):
         self.set('LINK',link)
@@ -107,6 +116,7 @@ class Branch(MapElement):
 
     def get(self, name):
         return self._attributes[name]
+
 
 
 

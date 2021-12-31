@@ -1,8 +1,8 @@
-from xml.etree import ElementTree
+from lxml.etree import tostring
 
 from freemap.map import Map
 
 
 class Writer:
     def as_text(map: Map) -> str:
-        return ElementTree.tostring(map.root())
+        return tostring(map.root())
