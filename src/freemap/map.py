@@ -76,6 +76,9 @@ class Branch(MapElement):
     def created(self):
         return self.get('CREATED')
 
+    def detail_markdown(self):
+        return self.get('DETAILS_MARKDOWN')
+
     def modified(self):
         return self.get('MODIFIED')
 
@@ -90,6 +93,9 @@ class Branch(MapElement):
 
     def link(self):
         return self.get('LINK')
+
+    def markdown_text(self) -> str:
+        return self.get('MARKDOWN_TEXT')
 
     def note(self):
         return self.get('NOTE')
@@ -115,7 +121,16 @@ class Branch(MapElement):
             self._attributes[MODIFIED] = dt.now()
 
     def get(self, name):
-        return self._attributes[name]
+        if name in self._attributes:
+            return self._attributes[name]
+        return None
+
+    def set_markdown_text(self, text):
+        self._attributes['MARKDOWN_TEXT'] = text
+
+    def set_details_markdown(self, text):
+        self._attributes['DETAILS_MARKDOWN'] = text
+        pass
 
 
 
