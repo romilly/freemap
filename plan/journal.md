@@ -44,3 +44,38 @@ After a day of uncertainty I am going to continue with the current approach:
 
 I need more reader tests and more freeplane-built maps.
 
+
+## Sunday 02 January 2022
+
+Ideally the reading and writing operations should be inverses; if you read a `.mm` file as a Map object, and the 
+write it, the output file should be _the same_: certainly representing the same XML document, and ideally containing 
+the identical text in the file.
+
+This is likely to be difficult to verify. I don't know of a good XML diff library, as it would require all the 
+attributes and all the elements to be in the same order.
+
+## Monday 03 January 2022
+
+The xml diffing approach to e2e (end-to-end) testing looks workable, so I am going to ignore `xdotool` and 
+`appraise` for now.
+
+At the moment, reading an xml freeplane file creates objects but does not connect the objects to the XML that 
+generated them.
+
+A freeplane map has lots of format-related XML. It's necessary, but I have no deed to interpret or modify it.
+
+However, a Map object needs to hold it so that it can be included in the XML if the Map object is serialised.
+
+My current plan, then, is to hold the XML corresponding to a Map within the Map object. 
+The Map constructor should build the map by reading a default map file (`Mindmal.mm`)
+Code that manipulates a map or its branches should make corresponding changes to the XML.
+Writing a Map then reduces to serialising the internal XML.
+
+I'll hold all the attributes of a node in a dictionary (as at present) and also create properties for the commonly 
+accessed attributes.
+
+Some of those (MARKDOWN_TEXT, DESCRIPTION, NOTE) will need to create, modify or access child elements.
+
+
+
+

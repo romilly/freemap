@@ -1,0 +1,72 @@
+<map version="freeplane 1.7.0">
+    \n<!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->\n
+    <node CREATED="1283093380553" FOLDED="false" ID="ID_1723255651" LOCALIZED_TEXT="new_mindmap"
+          MODIFIED="1283093380553">
+        <hook NAME="MapStyle">\n    <properties
+                edgeColorConfiguration="#808080ff,#808080ff,#808080ff,#808080ff,#808080ff"
+                fit_to_viewport="false"></properties>\n\n
+            <map_styles>\n
+                <stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24.0 pt">
+                    \n<font SIZE="24"></font>\n
+                    <stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right" STYLE="bubble">\n
+                        <stylenode COLOR="#000000" LOCALIZED_TEXT="default" MAX_WIDTH="600.0 px" STYLE="as_parent">
+                            \n<font BOLD="false" ITALIC="false" NAME="SansSerif" SIZE="10"></font>\n
+                        </stylenode>
+                        \n<stylenode LOCALIZED_TEXT="defaultstyle.details"></stylenode>\n
+                        <stylenode LOCALIZED_TEXT="defaultstyle.attributes">\n<font SIZE="9"></font>\n
+                        </stylenode>
+                        \n<stylenode LOCALIZED_TEXT="defaultstyle.note"></stylenode>\n
+                        <stylenode LOCALIZED_TEXT="defaultstyle.floating">\n<edge STYLE="hide_edge"></edge>\n<cloud
+                                COLOR="#f0f0f0" SHAPE="ROUND_RECT"></cloud>\n
+                        </stylenode>
+                        \n
+                    </stylenode>
+                    \n
+                    <stylenode LOCALIZED_TEXT="styles.user-defined" POSITION="right" STYLE="bubble">\n
+                        <stylenode COLOR="#18898b" LOCALIZED_TEXT="styles.topic" STYLE="fork">\n<font BOLD="true"
+                                                                                                      NAME="Liberation Sans"
+                                                                                                      SIZE="10"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#cc3300" LOCALIZED_TEXT="styles.subtopic" STYLE="fork">\n<font BOLD="true"
+                                                                                                         NAME="Liberation Sans"
+                                                                                                         SIZE="10"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#669900" LOCALIZED_TEXT="styles.subsubtopic">\n<font BOLD="true"
+                                                                                               NAME="Liberation Sans"
+                                                                                               SIZE="10"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode LOCALIZED_TEXT="styles.important">\n<icon BUILTIN="yes"></icon>\n
+                        </stylenode>
+                        \n
+                    </stylenode>
+                    \n
+                    <stylenode LOCALIZED_TEXT="styles.AutomaticLayout" POSITION="right" STYLE="bubble">\n
+                        <stylenode COLOR="#000000" LOCALIZED_TEXT="AutomaticLayout.level.root">\n<font SIZE="18"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#0033ff" LOCALIZED_TEXT="AutomaticLayout.level,1">\n<font SIZE="16"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#00b439" LOCALIZED_TEXT="AutomaticLayout.level,2">\n<font SIZE="14"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#990000" LOCALIZED_TEXT="AutomaticLayout.level,3">\n<font SIZE="12"></font>\n
+                        </stylenode>
+                        \n
+                        <stylenode COLOR="#111111" LOCALIZED_TEXT="AutomaticLayout.level,4">\n<font SIZE="10"></font>\n
+                        </stylenode>
+                        \n
+                    </stylenode>
+                    \n
+                </stylenode>
+                \n
+            </map_styles>
+            \n
+        </hook>
+        \n<hook COUNTER="1" NAME="AutomaticEdgeColor" RULE="ON_BRANCH_CREATION"></hook>\n
+    </node>
+    \n
+</map>

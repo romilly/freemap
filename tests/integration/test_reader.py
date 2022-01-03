@@ -9,12 +9,7 @@ from hamcrest import assert_that, not_none, equal_to, contains_exactly
 from freemap.map import Icons
 from freemap.reader import map_from_string
 from freemap.helpers.files import read
-
-TEST_DATA_DIRECTORY = 'data'
-
-
-def test_file(file_name: str) -> str:
-    return os.path.join(TEST_DATA_DIRECTORY, file_name)
+from helpers.files import test_file
 
 
 class TestMapReader(unittest.TestCase):
@@ -32,14 +27,10 @@ class TestMapReader(unittest.TestCase):
         mmap = map_from_string('<map><node {ts}/></map>'.format(ts=self.ts))
         assert_that(mmap.root(), not_none())
 
-    def test_generates_node_id_if_missing(self):
-        mmap = map_from_string('<map><node {ts}/></map>'.format(ts=self.ts))
-        assert_that(mmap.root().id, not_none())
-
     def test_uses_node_id_if_present(self):
         node_id = "Freemind_Link_1331878192"
         mmap = map_from_string('<map><node ID="{nid}" {ts}/></map>'.format(nid=node_id, ts=self.ts))
-        assert_that(mmap.root().id, equal_to(node_id))
+        assert_that(mmap.root().id(), equal_to(node_id))
 
     def test_reads_branches(self):
         map__format = '<map><node {ts}><node {ts}/></node></map>'.format(ts=self.ts)
@@ -86,10 +77,6 @@ class TestMapReader(unittest.TestCase):
         map = map_from_string(map_text)
         root_node = map.root()
         assert_that(root_node.detail_markdown(), starts_with('plan details'))
-
-
-
-# def test_reads_links(self):
 
 
 if __name__ == '__main__':

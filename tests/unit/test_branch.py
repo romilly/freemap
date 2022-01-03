@@ -27,12 +27,12 @@ class BranchTester(unittest.TestCase):
 
     def test_knows_when_created(self):
         before = dt.now()
-        branch = Branch('Any Id')
+        branch = Branch()
         after = dt.now()
         assert_that(branch.created(), between(before, after))
 
     def test_knows_when_attribute_modified(self):
-        branch = Branch('Any Id')
+        branch = Branch()
         t1 = dt.now()
         branch.set_link('foo')
         t2 = dt.now()
