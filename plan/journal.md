@@ -47,12 +47,9 @@ I need more reader tests and more freeplane-built maps.
 
 ## Sunday 02 January 2022
 
-Ideally the reading and writing operations should be inverses; if you read a `.mm` file as a Map object, and the 
+Ideally the reading and writing operations should be inverses; if you read a `.mm` file as a Map object, and then 
 write it, the output file should be _the same_: certainly representing the same XML document, and ideally containing 
 the identical text in the file.
-
-This is likely to be difficult to verify. I don't know of a good XML diff library, as it would require all the 
-attributes and all the elements to be in the same order.
 
 ## Monday 03 January 2022
 
@@ -71,10 +68,12 @@ The Map constructor should build the map by reading a default map file (`Mindmal
 Code that manipulates a map or its branches should make corresponding changes to the XML.
 Writing a Map then reduces to serialising the internal XML.
 
-I'll hold all the attributes of a node in a dictionary (as at present) and also create properties for the commonly 
-accessed attributes.
+I'll
+1. create a node from an element, or create a default element if none is provided
+2. hold all the attributes of the node in the element's attribute dictionary and also 
+3. create node properties for the commonly accessed attributes, which will update the MODIFIED entry in the dictionary.
 
-Some of those (MARKDOWN_TEXT, DESCRIPTION, NOTE) will need to create, modify or access child elements.
+Some properties (markdown_text, description, note) will need to create, modify or access child elements.
 
 
 

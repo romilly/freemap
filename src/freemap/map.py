@@ -1,4 +1,5 @@
-from datetime import datetime as dt
+from datetime import datetime
+from typing import Optional
 
 from html2text import html2text
 from lxml import etree
@@ -11,25 +12,17 @@ MODIFIED = 'MODIFIED'
 __author__ = 'romilly'
 
 
-def datetime(timestamp_in_milliseconds):
-    return dt.fromtimestamp(float(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
+def datetime_from(timestamp_in_milliseconds: int) -> datetime:
+    return datetime.fromtimestamp(float(timestamp_in_milliseconds) / 1000.0) if timestamp_in_milliseconds else None
+
+
+def timestamp_in_millis(dt: datetime):
+    return round(dt.timestamp()*1000)
 
 
 def build_node_from(element: Element):
     if element.tag == 'node':
-        id_ = element.get('ID')
-        branch = Branch()
-        branch.set_id(id_)
-        branch.set_created(element.get('CREATED'))
-        branch.set_text(element.get('TEXT'))
-        branch.set_localized_text(element.get('LOCALIZED_TEXT'))
-        branch.set_markdown_text(find_rich_content_in(element, 'NODE'))
-        branch.set_details_markdown(find_rich_content_in(element, 'DETAILS'))
-        branch.set_link(element.get('LINK'))
-        branch.set_icons(icons_in(element))
-        branch.set_note(get_note_from(element)) # TODO: use find_rich_content
-        branch.set_modified(element.get('MODIFIED'))
-        return branch
+        return Branch(element)
 
 
 def find_rich_content_in(xml, node_type):
@@ -49,8 +42,8 @@ def add_children_from_xml(xml_node, parent):
     return parent
 
 
-def icons_in(child):
-    return [Icons.icon(icon.get('BUILTIN')) for icon in child.findall('icon')]
+def icons_in(node):
+    return [Icons.icon(icon.get('BUILTIN')) for icon in node.findall('icon')]
 
 
 def get_note_from(child_xml):
@@ -88,25 +81,21 @@ class Map:
     def as_text(self) -> str:
         return tostring(self._root).decode('utf-8')
 
-# TODO: note, description (currently missing) should contain None by default
-# since a mind map file might contain a note or description with no text or a note.. with empty text.
+    @classmethod
+    def from_string(cls, map_text: str):
+        root = etree.XML(map_text)  # root is a map element
+        return Map(root)
 
 
 class Branch:
-    def __init__(self):
-        self._node_id = UUIDGenerator.next_uuid()
-        self._attributes = {}
-        self.set_text(None)
-        self.set_localized_text(None)
-        self.set_icons([])
-        self.set_link(None)
-        self.set_note('')
-        self._children = []
-        timestamp_ms = self.timestamp(dt.now())
-        self.set_created(timestamp_ms)
-
-    def timestamp(self, now):
-        return 1000 * now.timestamp()
+    def __init__(self, element: Optional[Element] = None):
+        self._children = [] # the children will get added by the map if building a map
+        if element is not None:
+            self.element = element
+        else:
+            self.element = Element('node')
+            self.node_id = UUIDGenerator.next_uuid()
+            self.set('CREATED',(str(timestamp_in_millis(datetime.now()))))
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -118,17 +107,14 @@ class Branch:
     def branch(self, index):
         return self.branches()[index]
 
-    def set_created(self, ts):
-        self.set('CREATED', datetime(ts))
-
     def set_modified(self, ts):
-        self._attributes[MODIFIED] = datetime(ts)
+        self.element.attributes[MODIFIED] = ts
 
     def created(self):
         return self.get('CREATED')
 
     def detail_markdown(self):
-        return self.get('DETAILS_MARKDOWN')
+        return find_rich_content_in(self.element,'DETAILS')
 
     def modified(self):
         return self.get('MODIFIED')
@@ -140,16 +126,16 @@ class Branch:
         return self.get('TEXT')
 
     def icons(self):
-        return self.get('ICONS')
+        return icons_in(self.element)
 
     def link(self):
         return self.get('LINK')
 
     def markdown_text(self) -> str:
-        return self.get('MARKDOWN_TEXT')
+        return find_rich_content_in(self.element,'NODE')
 
     def note(self):
-        return self.get('NOTE')
+        return get_note_from(self.element)
 
     def set_text(self, text):
         self.set('TEXT', text)
@@ -163,18 +149,19 @@ class Branch:
     def set_icons(self, icons):
         self.set('ICONS', icons if icons else [])
 
-    def set_note(self, note):
-        self.set('NOTE', note if note else '')
-
     def set(self, name, value):
-        self._attributes[name] = value
-        if name != MODIFIED:
-            self._attributes[MODIFIED] = dt.now()
+        self.element.set(name,value)
+        if name not in [MODIFIED, 'ID']:
+            self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
 
     def get(self, name):
-        if name in self._attributes:
-            return self._attributes[name]
+        if name in self.element.attrib:
+            return self.element.get(name)
         return None
+
+# TODO: these should create or update richtext children
+    def set_note(self, note):
+        self.set('NOTE', note if note else '')
 
     def set_markdown_text(self, text):
         self._attributes['MARKDOWN_TEXT'] = text
@@ -184,10 +171,10 @@ class Branch:
         pass
 
     def set_id(self, id_):
-        self._node_id = id_
+        self.set('ID', id_)
 
     def id(self):
-        return self._node_id
+        return self.get('ID')
 
 
 

@@ -24,25 +24,19 @@ def between(low, high):
 
 
 class BranchTester(unittest.TestCase):
-
     def test_knows_when_created(self):
-        before = dt.now()
+        before = round(1000*dt.now().timestamp())
         branch = Branch()
-        after = dt.now()
-        assert_that(branch.created(), between(before, after))
+        after = round(1000*dt.now().timestamp())
+        created = branch.created()
+        assert_that(float(created), between(before, after))
 
     def test_knows_when_attribute_modified(self):
         branch = Branch()
-        t1 = dt.now()
+        t1 = round(1000*dt.now().timestamp())
         branch.set_link('foo')
-        t2 = dt.now()
-        assert_that(branch.modified(), between(t1, t2))
-        branch.set_icons([Icons.icon('foo')])
-        t3 = dt.now()
-        assert_that(branch.modified(), between(t2, t3))
-        branch.set_note('bar')
-        t4 = dt.now()
-        assert_that(branch.modified(), between(t3, t4))
+        t2 = round(1000*dt.now().timestamp())
+        assert_that(float(branch.modified()), between(t1, t2))
 
 
 
