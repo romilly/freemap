@@ -7,7 +7,7 @@ from freemap.map import Map
 from helpers.files import test_file, xml_equal
 
 
-class WriterTestCase(unittest.TestCase):
+class WritingTestCase(unittest.TestCase):
         def test_writes_map_as_read(self):
             test_in = 'test-plan.mm'
             map_text = read(test_file(test_in))

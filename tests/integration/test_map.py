@@ -11,7 +11,7 @@ from freemap.helpers.files import read
 from helpers.files import test_file
 
 
-class TestMapReader(unittest.TestCase):
+class TestMap(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
 
