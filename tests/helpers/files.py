@@ -18,4 +18,6 @@ def canconicalize(path1: str):
     r = subprocess.run(['xmllint',
                         '--exc-c14n',
                         path1],capture_output=True)
+    if r.returncode != 0:
+            raise ValueError('%s is not a valid XML file' % path1)
     return r.stdout.decode('utf-8')

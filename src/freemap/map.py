@@ -5,6 +5,7 @@ from html2text import html2text
 from lxml import etree
 from lxml.etree import tostring, Element
 
+from freemap.helpers.base_map import minimal_map
 from freemap.uuids import UUIDGenerator
 
 MODIFIED = 'MODIFIED'
@@ -69,7 +70,9 @@ class Icons(object):
 
 
 class Map:
-    def __init__(self, root: Element):
+    def __init__(self, root: Optional[Element] = None):
+        if root is None:
+            root = etree.XML(minimal_map)
         self._root = root
         root_node_xml = root.find('node')
         self.root_node = build_node_from(root_node_xml)
