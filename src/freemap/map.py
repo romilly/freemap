@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
@@ -35,7 +36,7 @@ def find_rich_content_in(xml, node_type):
     if rc is not None:
         html = rc.find('html')
         text = etree.tostring(html)
-        return html2text(text.decode('utf-8'))
+        return html2text(text.decode('utf-8')).strip()
 
 
 def add_children_from_xml(xml_node, parent):
@@ -72,37 +73,50 @@ class Icons(object):
             cls.icon_dict[name] = Icon(name)
         return cls.icon_dict[name]
 
+@abstractmethod
+class MapElement(ABC):
+    def __init__(self, element: Optional[Element] = None):
+        if element is not None:
+            self.element = element
+        else:
+            self.set_default_element()
 
-class Map:
-    def __init__(self, root: Optional[Element] = None):
-        if root is None:
-            root = etree.XML(minimal_map)
-        self._root = root
-        root_node_xml = root.find('node')
+    @abstractmethod
+    def set_default_element(self):
+        pass
+
+    @classmethod
+    def from_string(cls, map_text: str):
+        element = etree.XML(map_text)  # root is a map element
+        return cls(element)
+
+    def as_text(self) -> str:
+        return tostring(self.element).decode('utf-8')
+
+
+class Map(MapElement):
+    def __init__(self, element: Optional[Element] = None):
+        MapElement.__init__(self, element)
+        root_node_xml = self.element.find('node')
         self.root_node = build_node_from(root_node_xml)
         add_children_from_xml(root_node_xml, self.root_node)
+
+    def set_default_element(self):
+        self.element = etree.XML(minimal_map)
 
     def root(self) -> Element:
         return self.root_node
 
-    def as_text(self) -> str:
-        return tostring(self._root).decode('utf-8')
 
-    @classmethod
-    def from_string(cls, map_text: str):
-        root = etree.XML(map_text)  # root is a map element
-        return Map(root)
-
-
-class Branch:
+class Branch(MapElement):
     def __init__(self, element: Optional[Element] = None):
+        MapElement.__init__(self, element)
         self._children = [] # the children will get added by the map if building a map
-        if element is not None:
-            self.element = element
-        else:
-            self.element = Element('node')
-            self.set_node_id(str(UUIDGenerator.next_uuid()))
-            self.set('CREATED',(str(timestamp_in_millis(datetime.now()))))
+
+    def set_default_element(self):
+        self.element = Element('node')
+        self.set('ID', str(UUIDGenerator.next_uuid()))
+        self.set('CREATED', (str(timestamp_in_millis(datetime.now()))))
 
     def add_child(self, branch):
         self._children.append(branch)
@@ -130,7 +144,9 @@ class Branch:
         # no setter, as the value is only set (indirectly) in the consructor.
         return self.get('CREATED')
 
-    def detail_markdown(self):
+    @property
+    def details(self):
+        """The details of a node"""
         return find_rich_content_in(self.element,'DETAILS')
 
     # def localized_text(self):
@@ -154,11 +170,13 @@ class Branch:
     def link(self):
         return self.get('LINK')
 
-    def markdown_text(self) -> str:
-        return find_rich_content_in(self.element,'NODE')
-
+    @property
     def note(self):
-        return get_note_from(self.element)
+        """the note attached to a node
+
+        :return:
+        """
+        return find_rich_content_in(self.element,'NOTE')
 
     def set_text(self, text):
         self.set('TEXT', text)
@@ -180,6 +198,9 @@ class Branch:
     def _update_modified(self):
         self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
 
+    def node_id(self):
+        return self.get('ID')
+
     def get(self, name):
         if name in self.element.attrib:
             return self.element.get(name)
@@ -196,11 +217,8 @@ class Branch:
         self._attributes['DETAILS_MARKDOWN'] = text
         pass
 
-    def set_node_id(self, id_):
-        self.set('ID', id_)
-
-    def node_id(self):
-        return self.get('ID')
+    # def set_node_id(self, id_):
+    #     self.set('ID', id_)
 
 
 

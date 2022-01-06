@@ -44,11 +44,6 @@ class TestMap(unittest.TestCase):
         mmap = Map.from_string('<map><node {ts} LINK="foo"/></map>'.format(ts=self.ts))
         assert_that(mmap.root().link(), equal_to("foo"))
 
-    def test_reads_notes(self):
-        map_text = '<map><node {ts}><richcontent TYPE="NOTE"><html/></richcontent></node></map>'.format(ts=self.ts)
-        mmap = Map.from_string(map_text)
-        assert_that(mmap.root().note(), equal_to("<html/>"))
-
     def test_reads_branch_text(self):
         map_text = '<map><node {ts} TEXT="foo"><node {ts}/><node {ts} TEXT="bar"></node></node></map>' \
             .format(ts=self.ts)
@@ -69,13 +64,13 @@ class TestMap(unittest.TestCase):
         map = Map.from_string(map_text)
         assert_that(map, is_not(none()))
         root_node = map.root()
-        assert_that(root_node.markdown_text(), starts_with('**test**\n\nplan'))
+        assert_that(root_node.text, starts_with('**test**\n\nplan'))
 
     def test_reads_node_with_details(self):
         map_text = read(test_file('test-plan.mm'))
         map = Map.from_string(map_text)
         root_node = map.root()
-        assert_that(root_node.detail_markdown(), starts_with('plan details'))
+        assert_that(root_node.details, starts_with('plan details'))
 
 
 if __name__ == '__main__':
