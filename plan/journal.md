@@ -75,6 +75,7 @@ I'll
 
 Some properties (markdown_text, description, note) will need to create, modify or access child elements.
 
+## Thursday 06 January 2022
 
-
+After several days I've got working tests for some map updating.
 

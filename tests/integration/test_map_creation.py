@@ -29,7 +29,7 @@ class TestMap(unittest.TestCase):
     def test_uses_node_id_if_present(self):
         node_id = "Freemind_Link_1331878192"
         mmap = Map.from_string('<map><node ID="{nid}" {ts}/></map>'.format(nid=node_id, ts=self.ts))
-        assert_that(mmap.root().id(), equal_to(node_id))
+        assert_that(mmap.root().node_id(), equal_to(node_id))
 
     def test_reads_branches(self):
         map__format = '<map><node {ts}><node {ts}/></node></map>'.format(ts=self.ts)

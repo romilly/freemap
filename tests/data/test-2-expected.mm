@@ -1,7 +1,6 @@
-minimal_map ="""
 <map version="freeplane 1.7.0">
 <!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
-<node TEXT="new_mindmap" FOLDED="false" ID="ID_1723255651" CREATED="1283093380553" MODIFIED="1283093380553"><hook NAME="MapStyle">
+<node TEXT="Wow!" FOLDED="false" ID="ID_1723255651" CREATED="1283093380553" MODIFIED="1641382260614"><hook NAME="MapStyle">
     <properties edgeColorConfiguration="#808080ff,#808080ff,#808080ff,#808080ff,#808080ff" fit_to_viewport="false"/>
 
 <map_styles>
@@ -58,4 +57,3 @@ minimal_map ="""
 <hook NAME="AutomaticEdgeColor" COUNTER="1" RULE="ON_BRANCH_CREATION"/>
 </node>
 </map>
-"""

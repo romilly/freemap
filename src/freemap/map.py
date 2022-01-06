@@ -97,7 +97,7 @@ class Branch:
             self.element = element
         else:
             self.element = Element('node')
-            self.node_id = UUIDGenerator.next_uuid()
+            self.set_node_id(str(UUIDGenerator.next_uuid()))
             self.set('CREATED',(str(timestamp_in_millis(datetime.now()))))
 
     def add_child(self, branch):
@@ -173,10 +173,10 @@ class Branch:
         self._attributes['DETAILS_MARKDOWN'] = text
         pass
 
-    def set_id(self, id_):
+    def set_node_id(self, id_):
         self.set('ID', id_)
 
-    def id(self):
+    def node_id(self):
         return self.get('ID')
 
 

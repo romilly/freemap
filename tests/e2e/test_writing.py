@@ -4,7 +4,7 @@ from hamcrest import assert_that
 
 from freemap.helpers.files import read, write
 from freemap.map import Map
-from helpers.files import test_file, xml_equal
+from helpers.files import test_file, assert_xml_equal
 
 
 class WritingTestCase(unittest.TestCase):
@@ -12,9 +12,9 @@ class WritingTestCase(unittest.TestCase):
             test_in = test_file('test-plan.mm')
             map_text = read(test_in)
             mmap = Map.from_string(map_text)
-            test_out = test_file('test_plan_out.mm')
+            test_out = test_file('output/test_plan_out.mm')
             write(mmap.as_text(), test_out)
-            assert_that(xml_equal(test_in, test_out))
+            assert_xml_equal(test_in, test_out, ignore_timestamps=False)
 
 
 
