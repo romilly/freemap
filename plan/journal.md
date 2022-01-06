@@ -79,3 +79,26 @@ Some properties (markdown_text, description, note) will need to create, modify o
 
 After several days I've got working tests for some map updating.
 
+I'm trying to simplify the API for accessing and setting node text.
+
+First step: replace getters and setters by properties.
+
+Next step: replace `TEXT` by `LOCALIZED_TEXT` in existing test data.
+
+It looks as if `LOCALIZED_TEXT` is now used to hold branch text instead of `TEXT`.
+
+If branch text is created via a dialog, the freeplane holds it in a `RICH_TEXT` node.
+
+I'm going to define the API like this:
+
+1. If  a value is assigned to `Branch.text`,
+   1. If the value is a `Markdown` object,  `TEXT` and `LOCALIZED_TEXT` will be 
+      deleted if present and a `RICH_TEXT` node will be created or updated.
+   2. If the value is a string, `TEXT` and any `RICH_TEXT` node will be deleted and `LOCALIZED_TEXT` will be set.
+2. iF a value is obtained from `Branch.text`,
+   1. Any value in `TEXT` or `LOCALIZED_TEXT` will be returned (with `LOCALIZED_TEXT` taking priority).
+   2. If neither is present the contents of the `RICH_TEXT` node wil be returnsd as a Markdown object.
+   3. If neither is present, and there is no `RICH_TEXT` node a ``ValueRerror` will be raised.
+
+Node details and node notes are always held as rich text if present. 
+

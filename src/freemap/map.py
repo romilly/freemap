@@ -110,6 +110,9 @@ class Branch:
     def branch(self, index):
         return self.branches()[index]
 
+    def modified(self):
+        return self.get('MODIFIED')
+
     def set_modified(self, ts):
         self.element.attributes[MODIFIED] = ts
 
@@ -118,9 +121,6 @@ class Branch:
 
     def detail_markdown(self):
         return find_rich_content_in(self.element,'DETAILS')
-
-    def modified(self):
-        return self.get('MODIFIED')
 
     def localized_text(self):
         return self.get('LOCALIZED_TEXT')
