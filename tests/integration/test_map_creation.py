@@ -20,7 +20,7 @@ class TestMap(unittest.TestCase):
         map = Map.from_string(map_text)
         assert_that(map, is_not(none()))
         root_node = map.root()
-        assert_that(root_node.localized_text(), equal_to('new_mindmap'))
+        assert_that(root_node.text, equal_to('new_mindmap'))
 
     def test_reads_root_node(self):
         mmap = Map.from_string('<map><node {ts}/></map>'.format(ts=self.ts))
@@ -53,9 +53,9 @@ class TestMap(unittest.TestCase):
         map_text = '<map><node {ts} TEXT="foo"><node {ts}/><node {ts} TEXT="bar"></node></node></map>' \
             .format(ts=self.ts)
         mmap = Map.from_string(map_text)
-        assert_that((mmap.root().text()), equal_to("foo"))
-        assert_that((mmap.root().branch(0).text()), none())
-        assert_that((mmap.root().branch(1).text()), equal_to("bar"))
+        assert_that((mmap.root().text), equal_to("foo"))
+        assert_that((mmap.root().branch(0).text), none())
+        assert_that((mmap.root().branch(1).text), equal_to("bar"))
 
     def test_reads_timestamps(self):
         map_text = '<map><node {ts} TEXT="foo"><node></node><node {ts} TEXT="bar"></node></node></map>' \

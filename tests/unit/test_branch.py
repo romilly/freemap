@@ -28,7 +28,7 @@ class BranchTester(unittest.TestCase):
         before = round(1000*dt.now().timestamp())
         branch = Branch()
         after = round(1000*dt.now().timestamp())
-        created = branch.created()
+        created = branch.created
         assert_that(float(created), between(before, after))
 
     def test_knows_when_attribute_modified(self):

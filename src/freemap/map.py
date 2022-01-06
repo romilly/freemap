@@ -8,7 +8,11 @@ from lxml.etree import tostring, Element
 from freemap.helpers.base_map import minimal_map
 from freemap.uuids import UUIDGenerator
 
+
+LOCALIZED_TEXT = 'LOCALIZED_TEXT'
 MODIFIED = 'MODIFIED'
+NODE = 'NODE'
+TEXT = 'TEXT'
 
 __author__ = 'romilly'
 
@@ -102,6 +106,7 @@ class Branch:
 
     def add_child(self, branch):
         self._children.append(branch)
+        # TODO: add a test, then add self._update_modified()
         return branch
 
     def branches(self):
@@ -110,26 +115,38 @@ class Branch:
     def branch(self, index):
         return self.branches()[index]
 
+# TODO: modified and created should return ints
     @property
-    def modified(self):
-        """The timestamp (in ms) when this branch was last modified"""
-        # no setter, as the value is changed only by changing some other property
+    def modified(self) -> str:
+        """The timestamp (in ms) when this branch was last modified.
+
+        There is no setter, as the value is changed only by changing some other property
+        """
         return self.get('MODIFIED')
 
     @property
     def created(self):
-        """ The timestamp (in ms) when this branch was created"""
+        """ The timestamp (in ms) when this branch was created."""
         # no setter, as the value is only set (indirectly) in the consructor.
         return self.get('CREATED')
 
     def detail_markdown(self):
         return find_rich_content_in(self.element,'DETAILS')
 
-    def localized_text(self):
-        return self.get('LOCALIZED_TEXT')
+    # def localized_text(self):
 
+    @property
     def text(self):
-        return self.get('TEXT')
+        """the text attribute of a node.
+
+        Returns the value of LOCALIZED_TEXT or TEXT as a string,
+        or the contents of the relevant RICH_TEXT node as Markdown
+        """
+        if LOCALIZED_TEXT in self.element.attrib:
+            return self.get(LOCALIZED_TEXT)
+        if TEXT in self.element.attrib:
+            return self.get(TEXT)
+        return find_rich_content_in(self.element, NODE)
 
     def icons(self):
         return icons_in(self.element)
@@ -158,7 +175,10 @@ class Branch:
     def set(self, name, value):
         self.element.set(name,value)
         if name not in [MODIFIED, 'ID']:
-            self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
+            self._update_modified()
+
+    def _update_modified(self):
+        self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
 
     def get(self, name):
         if name in self.element.attrib:
