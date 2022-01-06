@@ -61,8 +61,8 @@ class TestMap(unittest.TestCase):
         map_text = '<map><node {ts} TEXT="foo"><node></node><node {ts} TEXT="bar"></node></node></map>' \
             .format(ts=self.ts)
         mmap = Map.from_string(map_text)
-        assert_that((mmap.root().created()), equal_to('1541258689450'))
-        assert_that((mmap.root().modified), equal_to('1541353381000'))
+        assert_that(mmap.root().created, equal_to('1541258689450'))
+        assert_that(mmap.root().modified, equal_to('1541353381000'))
 
     def test_reads_node_with_markdown_text(self):
         map_text = read(test_file('test-plan.mm'))

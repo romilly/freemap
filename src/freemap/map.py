@@ -113,13 +113,13 @@ class Branch:
     @property
     def modified(self):
         """The timestamp (in ms) when this branch was last modified"""
+        # no setter, as the value is changed only by changing some other property
         return self.get('MODIFIED')
 
-    @modified.setter
-    def modified(self, ts):
-        self.set(MODIFIED, ts)
-
+    @property
     def created(self):
+        """ The timestamp (in ms) when this branch was created"""
+        # no setter, as the value is only set (indirectly) in the consructor.
         return self.get('CREATED')
 
     def detail_markdown(self):
