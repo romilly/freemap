@@ -36,7 +36,7 @@ class BranchTester(unittest.TestCase):
         t1 = round(1000*dt.now().timestamp())
         branch.set_link('foo')
         t2 = round(1000*dt.now().timestamp())
-        assert_that(float(branch.modified()), between(t1, t2))
+        assert_that(float(branch.modified), between(t1, t2))
 
 
 

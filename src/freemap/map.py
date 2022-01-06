@@ -110,11 +110,14 @@ class Branch:
     def branch(self, index):
         return self.branches()[index]
 
+    @property
     def modified(self):
+        """The timestamp (in ms) when this branch was last modified"""
         return self.get('MODIFIED')
 
-    def set_modified(self, ts):
-        self.element.attributes[MODIFIED] = ts
+    @modified.setter
+    def modified(self, ts):
+        self.set(MODIFIED, ts)
 
     def created(self):
         return self.get('CREATED')
