@@ -129,20 +129,19 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
-# TODO: modified and created should return ints
     @property
-    def modified(self) -> str:
+    def modified(self) -> int:
         """The timestamp (in ms) when this branch was last modified.
 
         There is no setter, as the value is changed only by changing some other property
         """
-        return self.get('MODIFIED')
+        return int(self.get('MODIFIED'))
 
     @property
-    def created(self):
+    def created(self) -> int:
         """ The timestamp (in ms) when this branch was created."""
-        # no setter, as the value is only set (indirectly) in the consructor.
-        return self.get('CREATED')
+        # no setter, as the value is only set (indirectly) in the constructor.
+        return int(self.get('CREATED'))
 
     @property
     def details(self):
@@ -181,9 +180,6 @@ class Branch(MapElement):
     def set_text(self, text):
         self.set('TEXT', text)
 
-    def set_localized_text(self, text):
-        self.set('LOCALIZED_TEXT', text)
-
     def set_link(self, link):
         self.set('LINK',link)
 
@@ -205,20 +201,6 @@ class Branch(MapElement):
         if name in self.element.attrib:
             return self.element.get(name)
         return None
-
-# TODO: these should create or update richtext children
-    def set_note(self, note):
-        self.set('NOTE', note if note else '')
-
-    def set_markdown_text(self, text):
-        self._attributes['MARKDOWN_TEXT'] = text
-
-    def set_details_markdown(self, text):
-        self._attributes['DETAILS_MARKDOWN'] = text
-        pass
-
-    # def set_node_id(self, id_):
-    #     self.set('ID', id_)
 
 
 

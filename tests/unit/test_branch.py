@@ -13,14 +13,14 @@ class BranchTester(unittest.TestCase):
         branch = Branch()
         after = round(1000*dt.now().timestamp())
         created = branch.created
-        assert_that(float(created), between(before, after))
+        assert_that(created, between(before, after))
 
     def test_knows_when_attribute_modified(self):
         branch = Branch()
         t1 = round(1000*dt.now().timestamp())
         branch.set_link('foo')
         t2 = round(1000*dt.now().timestamp())
-        assert_that(float(branch.modified), between(t1, t2))
+        assert_that(branch.modified, between(t1, t2))
 
     def test_retrieves_rich_text(self):
         branch = Branch.from_string('<node><richcontent '
