@@ -8,14 +8,15 @@ from helpers.matchers import between
 
 # TODO: add tests for TEXT, LOCALISED_TEXT
 
+
 class BranchTester(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
 
     def test_knows_when_created(self):
-        before = round(1000*dt.now().timestamp())
+        before = self.now()
         branch = Branch()
-        after = round(1000*dt.now().timestamp())
+        after = self.now()
         created = branch.created
         assert_that(created, between(before, after))
 
@@ -26,10 +27,13 @@ class BranchTester(unittest.TestCase):
 
     def test_knows_when_attribute_modified(self):
         branch = Branch()
-        t1 = round(1000*dt.now().timestamp())
+        t1 = self.now()
         branch.set_link('foo')
-        t2 = round(1000*dt.now().timestamp())
+        t2 = self.now()
         assert_that(branch.modified, between(t1, t2))
+
+    def now(self):
+        return round(1000 * dt.now().timestamp())
 
     def test_knows_timestamps(self):
         text = '<node {ts} TEXT="foo"></node>' \

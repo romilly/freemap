@@ -5,8 +5,6 @@ from hamcrest import assert_that, not_none, equal_to
 from freemap.map import Map
 
 
-#TODO: remove or move map unit tests that should test at the branch level.
-
 class TestMap(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
@@ -27,7 +25,6 @@ class TestMap(unittest.TestCase):
         assert_that(root.node_id, equal_to('1'))
         assert_that((root.branch(0).node_id), equal_to('2'))
         assert_that((root.branch(1).node_id), equal_to('3'))
-
 
 
 if __name__ == '__main__':

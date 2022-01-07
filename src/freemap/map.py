@@ -2,14 +2,12 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
-from html2text import html2text
 from lxml import etree
 from lxml.etree import tostring, Element
 
 from freemap.helpers.base_map import minimal_map
 from freemap.rich_text import RichText
 from freemap.uuids import UUIDGenerator
-
 
 LOCALIZED_TEXT = 'LOCALIZED_TEXT'
 MODIFIED = 'MODIFIED'
@@ -32,14 +30,15 @@ def build_node_from(element: Element):
         return Branch(element)
 
 
-def find_rich_content_in(xml, node_type) -> RichText:
+def find_rich_content_in(xml, node_type) -> Optional[RichText]:
     rc = xml.find('richcontent[@TYPE="%s"]' % node_type)
-    if rc is not None:
-        html = rc.find('html')
-        text = etree.tostring(html)
-        rt = RichText()
-        rt.html = text.decode('utf-8')
-        return rt
+    if rc is None:
+        return None
+    html = rc.find('html')
+    text = etree.tostring(html)
+    rt = RichText()
+    rt.html = text.decode('utf-8')
+    return rt
 
 
 def add_children_from_xml(xml_node, parent):
@@ -62,7 +61,7 @@ def get_note_from(child_xml):
     return etree.tostring(rich_content.find('html'), encoding=str)
 
 
-class Icon():
+class Icon:
     def __init__(self, name):
         self._name = name
 
@@ -170,7 +169,7 @@ class Branch(MapElement):
         return icons_in(self.element)
 
     @property
-    def link(self):
+    def link(self) -> str:
         """returns the hyperlink of a node."""
         return self.get('LINK')
 
@@ -179,10 +178,10 @@ class Branch(MapElement):
         self.set('LINK', value)
 
     @property
-    def note(self):
+    def note(self) -> RichText:
         """the note attached to a node
 
-        :return:
+        :return: rich text from note
         """
         return find_rich_content_in(self.element,'NOTE')
 
@@ -204,10 +203,10 @@ class Branch(MapElement):
         self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
 
     @property
-    def node_id(self):
+    def node_id(self) -> Optional[str]:
         return self.get('ID')
 
-    def get(self, name):
+    def get(self, name) -> Optional[str]:
         if name in self.element.attrib:
             return self.element.get(name)
         return None
