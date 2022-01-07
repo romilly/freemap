@@ -1,13 +1,10 @@
-import os
-
-import datetime
 import unittest
 
-from hamcrest import is_not, none, starts_with
 from hamcrest import assert_that, not_none, equal_to, contains_exactly
+from hamcrest import is_not, none, starts_with
 
-from freemap.map import Icons, Map
 from freemap.helpers.files import read
+from freemap.map import Icons, Map
 from helpers.files import test_file
 
 
@@ -39,10 +36,6 @@ class TestMap(unittest.TestCase):
     def test_reads_icons(self):
         mmap = Map.from_string('<map><node {ts}><icon BUILTIN="button_ok"/></node></map>'.format(ts=self.ts))
         assert_that(mmap.root().icons(), contains_exactly(Icons.icon('button_ok')))
-
-    def test_reads_links(self):
-        mmap = Map.from_string('<map><node {ts} LINK="foo"/></map>'.format(ts=self.ts))
-        assert_that(mmap.root().link(), equal_to("foo"))
 
     def test_reads_branch_text(self):
         map_text = '<map><node {ts} TEXT="foo"><node {ts}/><node {ts} TEXT="bar"></node></node></map>' \

@@ -37,6 +37,17 @@ class BranchTester(unittest.TestCase):
                                     'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
         assert_that(branch.details, equal_to('Who!'))
 
+    def test_retrieves_link(self):
+        branch = Branch.from_string('<node LINK="foo"/>')
+        assert_that(branch.link, equal_to('foo'))
+
+    def test_sets_link(self):
+        branch = Branch.from_string('<node LINK="foo"/>')
+        branch.link = 'boo!'
+        assert_that(branch.link, equal_to('boo!'))
+
+
+
 
 
 

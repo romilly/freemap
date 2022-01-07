@@ -166,8 +166,14 @@ class Branch(MapElement):
     def icons(self):
         return icons_in(self.element)
 
+    @property
     def link(self):
+        """returns the hyperlink of a node."""
         return self.get('LINK')
+
+    @link.setter
+    def link(self, value: str):
+        self.set('LINK', value)
 
     @property
     def note(self):
