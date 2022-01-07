@@ -6,8 +6,6 @@ from hamcrest import assert_that, equal_to, contains_exactly
 from freemap.map import Branch, Icons
 from helpers.matchers import between
 
-# TODO: add tests for TEXT, LOCALISED_TEXT
-
 
 class BranchTester(unittest.TestCase):
     def setUp(self):
