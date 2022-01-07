@@ -108,5 +108,7 @@ I'm going to create a RichText class instances of which can hold and interconver
 That will allow me to get more useful results from retrievals of text, notes and descriptions, and to set branch 
 rich text.
 
+Done. A great day's work!
+
 
 
