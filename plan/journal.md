@@ -100,5 +100,14 @@ I'm going to define the API like this:
    2. If neither is present the contents of the `RICH_TEXT` node wil be returnsd as a Markdown object.
    3. If neither is present, and there is no `RICH_TEXT` node a ``ValueRerror` will be raised.
 
-Node details and node notes are always held as rich text if present. 
+Node details and node notes are always held as rich text if present.
+
+## Friday 07 January 2022
+
+I'm going to create a RichText class instances of which can hold and interconvert markdown and html.
+
+That will allow me to get more useful results from retrievals of text, notes and descriptions, and to set branch 
+rich text.
+
+
 

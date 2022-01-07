@@ -6,6 +6,7 @@ from hamcrest import assert_that, equal_to
 from freemap.map import Branch
 from helpers.matchers import between
 
+# TODO: add tests for TEXT, LOCALISED_TEXT
 
 class BranchTester(unittest.TestCase):
     def test_knows_when_created(self):
@@ -25,17 +26,17 @@ class BranchTester(unittest.TestCase):
     def test_retrieves_rich_text(self):
         branch = Branch.from_string('<node><richcontent '
                                     'TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
-        assert_that(branch.text, equal_to('Ha!'))
+        assert_that(branch.text.markdown, equal_to('Ha!'))
 
     def test_retrieves_note(self):
         branch = Branch.from_string('<node><richcontent '
                                     'TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
-        assert_that(branch.note, equal_to('Hi!'))
+        assert_that(branch.note.markdown, equal_to('Hi!'))
 
     def test_retrieves_description(self):
         branch = Branch.from_string('<node><richcontent '
                                     'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
-        assert_that(branch.details, equal_to('Who!'))
+        assert_that(branch.details.markdown, equal_to('Who!'))
 
     def test_retrieves_link(self):
         branch = Branch.from_string('<node LINK="foo"/>')

@@ -7,6 +7,7 @@ from lxml import etree
 from lxml.etree import tostring, Element
 
 from freemap.helpers.base_map import minimal_map
+from freemap.rich_text import RichText
 from freemap.uuids import UUIDGenerator
 
 
@@ -31,12 +32,14 @@ def build_node_from(element: Element):
         return Branch(element)
 
 
-def find_rich_content_in(xml, node_type):
+def find_rich_content_in(xml, node_type) -> RichText:
     rc = xml.find('richcontent[@TYPE="%s"]' % node_type)
     if rc is not None:
         html = rc.find('html')
         text = etree.tostring(html)
-        return html2text(text.decode('utf-8')).strip()
+        rt = RichText()
+        rt.html = text.decode('utf-8')
+        return rt
 
 
 def add_children_from_xml(xml_node, parent):
@@ -144,7 +147,7 @@ class Branch(MapElement):
         return int(self.get('CREATED'))
 
     @property
-    def details(self):
+    def details(self) -> RichText:
         """The details of a node"""
         return find_rich_content_in(self.element,'DETAILS')
 
