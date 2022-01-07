@@ -42,10 +42,27 @@ class BranchTester(unittest.TestCase):
         assert_that(branch.created, equal_to(1541258689450))
         assert_that(branch.modified, equal_to(1541353381000))
 
-    def test_retrieves_rich_text(self):
+    def test_knows_if_text_is_rich(self):
+        branch = Branch.from_string('<node><richcontent TYPE="NODE"><html/></richcontent></node>')
+        assert_that(branch.has_rich_content())
+        branch = Branch.from_string('<node TEXT="text"/>')
+        assert_that(not branch.has_rich_content())
+        branch = Branch.from_string('<node LOCALIZED_TEXT="text"/>')
+        assert_that(not branch.has_rich_content())
+
+    def test_retrieves_text_from_rich_content_nodes(self):
         branch = Branch.from_string('<node><richcontent '
                                     'TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
-        assert_that(branch.text.markdown, equal_to('Ha!'))
+        assert_that(branch.text, equal_to('Ha!'))
+
+    def test_retrieves_rich_content_from_nodes(self):
+        branch = Branch.from_string('<node TEXT="texty"/>')
+        assert_that(branch.rich_content.markdown, equal_to('texty'))
+        branch = Branch.from_string('<node LOCALIZED_TEXT="localized"/>')
+        assert_that(branch.rich_content.markdown, equal_to('localized'))
+        branch = Branch.from_string('<node><richcontent '
+                                    'TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
+        assert_that(branch.rich_content.markdown, equal_to('Ha!'))
 
     def test_retrieves_note(self):
         branch = Branch.from_string('<node><richcontent '
@@ -68,7 +85,7 @@ class BranchTester(unittest.TestCase):
 
     def test_reads_icons(self):
         branch = Branch.from_string('<node><icon BUILTIN="button_ok"/></node>')
-        assert_that(branch.icons(), contains_exactly(Icons.icon('button_ok')))
+        assert_that(branch.icons, contains_exactly(Icons.icon('button_ok')))
 
 
 

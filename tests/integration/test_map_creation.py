@@ -28,7 +28,7 @@ class TestMap(unittest.TestCase):
         map = Map.from_string(map_text)
         assert_that(map, is_not(none()))
         root_node = map.root()
-        assert_that(root_node.text.markdown, starts_with('**test**\n\nplan'))
+        assert_that(root_node.text, starts_with('**test**\n\nplan'))
 
     def test_reads_node_with_details(self):
         map_text = read(test_file('test-plan.mm'))

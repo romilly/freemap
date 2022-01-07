@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from lxml import etree
 from lxml.etree import tostring, Element
@@ -52,13 +52,6 @@ def add_children_from_xml(xml_node, parent):
 
 def icons_in(node):
     return [Icons.icon(icon.get('BUILTIN')) for icon in node.findall('icon')]
-
-
-def get_note_from(child_xml):
-    rich_content = child_xml.find('richcontent')
-    if rich_content is None:
-        return None
-    return etree.tostring(rich_content.find('html'), encoding=str)
 
 
 class Icon:
@@ -131,6 +124,8 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
+    def has_rich_content(self) -> bool:
+        return find_rich_content_in(self.element, 'NODE') is not None
     @property
     def modified(self) -> int:
         """The timestamp (in ms) when this branch was last modified.
@@ -152,20 +147,41 @@ class Branch(MapElement):
 
     # def localized_text(self):
 
+    def _get_text(self):
+        result = None
+        if LOCALIZED_TEXT in self.element.attrib:
+            result = self.get(LOCALIZED_TEXT)
+        elif TEXT in self.element.attrib:
+            result = self.get(TEXT)
+        return result
+
+
     @property
-    def text(self):
+    def text(self) -> str:
         """the text attribute of a node.
 
-        Returns the value of LOCALIZED_TEXT or TEXT as a string,
-        or the contents of the relevant RICH_TEXT node as Markdown
+        Returns the value of LOCALIZED_TEXT, TEXT or richcontent as a markdown string.
         """
-        if LOCALIZED_TEXT in self.element.attrib:
-            return self.get(LOCALIZED_TEXT)
-        if TEXT in self.element.attrib:
-            return self.get(TEXT)
-        return find_rich_content_in(self.element, NODE)
+        result = self._get_text()
+        if result is None:
+            result = find_rich_content_in(self.element, NODE).markdown
+        return result
 
-    def icons(self):
+    @property
+    def rich_content(self) -> RichText:
+        result = self._get_text()
+        if result is None:
+            result = find_rich_content_in(self.element, NODE)
+        else:
+            rt = RichText()
+            rt.markdown = result
+            result = rt
+        return result
+
+
+
+    @property
+    def icons(self) -> List[Icon]:
         return icons_in(self.element)
 
     @property
