@@ -203,6 +203,7 @@ class Branch(MapElement):
     def _update_modified(self):
         self.element.set(MODIFIED, str(timestamp_in_millis(datetime.now())))
 
+    @property
     def node_id(self):
         return self.get('ID')
 

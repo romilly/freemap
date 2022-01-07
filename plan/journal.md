@@ -82,7 +82,6 @@ After several days I've got working tests for some map updating.
 I'm trying to simplify the API for accessing and setting node text.
 
 First step: replace getters and setters by properties.
-
 Next step: replace `TEXT` by `LOCALIZED_TEXT` in existing test data.
 
 It looks as if `LOCALIZED_TEXT` is now used to hold branch text instead of `TEXT`.
