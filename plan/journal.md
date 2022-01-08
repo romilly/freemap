@@ -110,5 +110,7 @@ rich text.
 
 Done. A great day's work!
 
+## Saturday 08 January 2022
 
+Today, test and code `text` and `rich_text` setters, add and remove branches.
 

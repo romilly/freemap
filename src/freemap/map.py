@@ -167,6 +167,15 @@ class Branch(MapElement):
             result = find_rich_content_in(self.element, NODE).markdown
         return result
 
+    @text.setter
+    def text(self, localized_text: str):
+        if TEXT in self.element.attrib:
+            del self.element.attrib[TEXT]
+        if self.has_rich_content():
+            rc = self.element.find('richcontent[@TYPE="NODE"]')
+            self.element.remove(rc)
+        self.set(LOCALIZED_TEXT, localized_text)
+
     @property
     def rich_content(self) -> RichText:
         result = self._get_text()

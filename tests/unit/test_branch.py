@@ -10,6 +10,10 @@ from helpers.matchers import between
 class BranchTester(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
+        self.branch_with_text = Branch.from_string('<node TEXT="text"/>')
+        self.branch_with_localized_text = Branch.from_string('<node LOCALIZED_TEXT="localized"/>')
+        self.branch_with_rich_content = Branch.from_string(
+            '<node><richcontent TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
 
     def test_knows_when_created(self):
         before = self.now()
@@ -41,26 +45,25 @@ class BranchTester(unittest.TestCase):
         assert_that(branch.modified, equal_to(1541353381000))
 
     def test_knows_if_text_is_rich(self):
-        branch = Branch.from_string('<node><richcontent TYPE="NODE"><html/></richcontent></node>')
-        assert_that(branch.has_rich_content())
-        branch = Branch.from_string('<node TEXT="text"/>')
-        assert_that(not branch.has_rich_content())
-        branch = Branch.from_string('<node LOCALIZED_TEXT="text"/>')
-        assert_that(not branch.has_rich_content())
+        assert_that(self.branch_with_rich_content.has_rich_content())
+        assert_that(not self.branch_with_text.has_rich_content())
+        assert_that(not self.branch_with_localized_text.has_rich_content())
 
     def test_retrieves_text_from_rich_content_nodes(self):
-        branch = Branch.from_string('<node><richcontent '
-                                    'TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
-        assert_that(branch.text, equal_to('Ha!'))
+        assert_that(self.branch_with_rich_content.text, equal_to('Ha!'))
+
+    def test_sets_text(self):
+        self.branch_with_text.text = 'Foo'
+        assert_that(self.branch_with_text.text, equal_to('Foo'))
+        self.branch_with_localized_text.text = 'Bar'
+        assert_that(self.branch_with_localized_text.text, equal_to('Bar'))
+        self.branch_with_rich_content.text = 'Baz'
+        assert_that(self.branch_with_rich_content.text, equal_to('Baz'))
 
     def test_retrieves_rich_content_from_nodes(self):
-        branch = Branch.from_string('<node TEXT="texty"/>')
-        assert_that(branch.rich_content.markdown, equal_to('texty'))
-        branch = Branch.from_string('<node LOCALIZED_TEXT="localized"/>')
-        assert_that(branch.rich_content.markdown, equal_to('localized'))
-        branch = Branch.from_string('<node><richcontent '
-                                    'TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
-        assert_that(branch.rich_content.markdown, equal_to('Ha!'))
+        assert_that(self.branch_with_text.rich_content.markdown, equal_to('text'))
+        assert_that(self.branch_with_localized_text.rich_content.markdown, equal_to('localized'))
+        assert_that(self.branch_with_rich_content.rich_content.markdown, equal_to('Ha!'))
 
     def test_retrieves_note(self):
         branch = Branch.from_string('<node><richcontent '
