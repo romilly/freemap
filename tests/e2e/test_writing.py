@@ -1,7 +1,5 @@
 import unittest
 
-from hamcrest import assert_that
-
 from freemap.helpers.files import read, write
 from freemap.map import Map
 from helpers.files import test_file, assert_xml_equal

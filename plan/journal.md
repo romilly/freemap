@@ -96,10 +96,10 @@ I'm going to define the API like this:
    2. If the value is a string, `TEXT` and any `RICH_TEXT` node will be deleted and `LOCALIZED_TEXT` will be set.
 2. iF a value is obtained from `Branch.text`,
    1. Any value in `TEXT` or `LOCALIZED_TEXT` will be returned (with `LOCALIZED_TEXT` taking priority).
-   2. If neither is present the contents of the `RICH_TEXT` node wil be returnsd as a Markdown object.
+   2. If neither is present the contents of the `RICH_TEXT` node wil be returned as a Markdown object.
    3. If neither is present, and there is no `RICH_TEXT` node a ``ValueRerror` will be raised.
 
-Node details and node notes are always held as rich text if present.
+Node details and notes are always held as rich text if present.
 
 ## Friday 07 January 2022
 
@@ -112,5 +112,11 @@ Done. A great day's work!
 
 ## Saturday 08 January 2022
 
-Today, test and code `text` and `rich_text` setters, add and remove branches.
+Today, test and code `text`, `rich_text`, `note` and `description` setters, add and remove branches.
+
+## Sunday 09 January 2022
+
+Time to check that this is useful and start reaping some value.
+
+I'm going to spike a check of my `active projects` mind map, verifying that the links are correct and complete.
 
