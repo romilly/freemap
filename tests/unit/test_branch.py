@@ -14,6 +14,8 @@ class BranchTester(unittest.TestCase):
         self.branch_with_localized_text = Branch.from_string('<node LOCALIZED_TEXT="localized"/>')
         self.branch_with_rich_content = Branch.from_string(
             '<node><richcontent TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
+        self.branch_with_note = Branch.from_string(
+            '<node><richcontent TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
 
     def test_knows_when_created(self):
         before = self.now()
@@ -74,9 +76,11 @@ class BranchTester(unittest.TestCase):
         assert_that(self.branch_with_localized_text.rich_content.markdown, equal_to('Hum!'))
 
     def test_retrieves_note(self):
-        branch = Branch.from_string('<node><richcontent '
-                                    'TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
-        assert_that(branch.note.markdown, equal_to('Hi!'))
+        assert_that(self.branch_with_note.note.markdown, equal_to('Hi!'))
+
+    def test_can_set_note(self):
+        self.branch_with_text.note = 'Note one'
+        assert_that(self.branch_with_text.note.markdown, equal_to('Note one'))
 
     def test_retrieves_description(self):
         branch = Branch.from_string('<node><richcontent '

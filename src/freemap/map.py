@@ -207,9 +207,7 @@ class Branch(MapElement):
                 del self.element.attrib[LOCALIZED_TEXT]
         else:
             self.remove_rich_content(NODE)
-        rt = RichText()
-        rt.markdown = new_content
-        self.add_node_rich_content(rt)
+        self.add_rich_content(new_content, NODE)
 
     @property
     def icons(self) -> List[Icon]:
@@ -231,6 +229,13 @@ class Branch(MapElement):
         :return: rich text from note
         """
         return self.find_rich_content_for(NOTE)
+
+    @note.setter
+    def note(self, new_content: str):
+        self.remove_rich_content(NOTE)
+        self.add_rich_content(new_content, NOTE)
+
+
 
     def set_text(self, text):
         self.set(TEXT, text)
@@ -264,11 +269,13 @@ class Branch(MapElement):
             result += branch.all_branches()
         return result
 
-    def remove_rich_content(self, type):
-        rc = self.find_rich_content_element(type)
+    def remove_rich_content(self, node_type):
+        rc = self.find_rich_content_element(node_type)
         if rc is not None:
             self.element.remove(rc)
 
-    def add_node_rich_content(self, rt: RichText):
-        self.element.append(rt.html_element(NODE))
+    def add_rich_content(self, new_content: str, node_type):
+        rt = RichText()
+        rt.markdown = new_content
+        self.element.append(rt.html_element(node_type))
 

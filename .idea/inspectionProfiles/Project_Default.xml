@@ -21,6 +21,7 @@
           <option value="markdown.core.Markdown.Meta" />
           <option value="integration_tests.test_database_catalogue.DatabaseCatalogTestCase.cursor" />
           <option value="integration_tests.test_database_catalogue.DatabaseCatalogTestCase.connection" />
+          <option value="str.markdown" />
         </list>
       </option>
     </inspection_tool>
