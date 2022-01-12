@@ -16,6 +16,8 @@ class BranchTester(unittest.TestCase):
             '<node><richcontent TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
         self.branch_with_note = Branch.from_string(
             '<node><richcontent TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
+        self.branch_with_details = Branch.from_string('<node><richcontent '
+                                    'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
 
     def test_knows_when_created(self):
         before = self.now()
@@ -81,11 +83,16 @@ class BranchTester(unittest.TestCase):
     def test_can_set_note(self):
         self.branch_with_text.note = 'Note one'
         assert_that(self.branch_with_text.note.markdown, equal_to('Note one'))
+        self.branch_with_note.note = 'replacement note'
+        assert_that(self.branch_with_note.note.markdown, equal_to('replacement note'))
+
 
     def test_retrieves_description(self):
-        branch = Branch.from_string('<node><richcontent '
-                                    'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
-        assert_that(branch.details.markdown, equal_to('Who!'))
+        assert_that(self.branch_with_details.details.markdown, equal_to('Who!'))
+
+    def test_sets_details(self):
+        self.branch_with_text.details = 'interesting details'
+        assert_that(self.branch_with_text.details.markdown, equal_to('interesting details'))
 
     def test_retrieves_link(self):
         branch = Branch.from_string('<node LINK="foo"/>')

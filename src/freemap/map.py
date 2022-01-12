@@ -155,6 +155,12 @@ class Branch(MapElement):
         """The details of a node"""
         return self.find_rich_content_for(DETAILS)
 
+    @details.setter
+    def details(self, new_content):
+        self.remove_rich_content(DETAILS)
+        self.add_rich_content(new_content, DETAILS)
+
+
     # def localized_text(self):
 
     def _get_text(self):
@@ -234,8 +240,6 @@ class Branch(MapElement):
     def note(self, new_content: str):
         self.remove_rich_content(NOTE)
         self.add_rich_content(new_content, NOTE)
-
-
 
     def set_text(self, text):
         self.set(TEXT, text)
