@@ -1,5 +1,9 @@
 import html2text
 import markdown as md
+from lxml import etree
+from lxml.etree import Element, SubElement
+
+from freemap.map import NODE
 
 
 class RichText:
@@ -27,3 +31,13 @@ class RichText:
     def html(self, html_text: str):
         self._html = html_text
         self._markdown = html2text.html2text(html_text).strip()
+
+    @property
+    def html_element(self) -> Element:
+        rc = Element('richcontent')
+        rc.attrib['TYPE'] = NODE
+        html = SubElement(rc, 'html')
+        SubElement(html, 'head')
+        body = SubElement(html, 'body')
+        body.append(etree.fromstring(self.html))
+        return rc

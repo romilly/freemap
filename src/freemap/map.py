@@ -3,16 +3,13 @@ from datetime import datetime
 from typing import Optional, List
 
 from lxml import etree
-from lxml.etree import tostring, Element
+from lxml.etree import tostring, Element, SubElement
 
+from freemap.attributes import LOCALIZED_TEXT, TEXT, NODE, MODIFIED, BUILTIN, DETAILS, CREATED, LINK, NOTE, ICONS, ID
 from freemap.helpers.base_map import minimal_map
 from freemap.rich_text import RichText
 from freemap.uuids import UUIDGenerator
 
-LOCALIZED_TEXT = 'LOCALIZED_TEXT'
-MODIFIED = 'MODIFIED'
-NODE = 'NODE'
-TEXT = 'TEXT'
 
 __author__ = 'romilly'
 
@@ -30,17 +27,6 @@ def build_node_from(element: Element):
         return Branch(element)
 
 
-def find_rich_content_in(xml, node_type) -> Optional[RichText]:
-    rc = xml.find('richcontent[@TYPE="%s"]' % node_type)
-    if rc is None:
-        return None
-    html = rc.find('html')
-    text = etree.tostring(html)
-    rt = RichText()
-    rt.html = text.decode('utf-8')
-    return rt
-
-
 def add_children_from_xml(xml_node, parent):
     for child_xml in xml_node:
         if child_xml.tag == 'node':
@@ -51,7 +37,7 @@ def add_children_from_xml(xml_node, parent):
 
 
 def icons_in(node):
-    return [Icons.icon(icon.get('BUILTIN')) for icon in node.findall('icon')]
+    return [Icons.icon(icon.get(BUILTIN)) for icon in node.findall('icon')]
 
 
 class Icon:
@@ -102,6 +88,15 @@ class Map(MapElement):
     def root(self) -> Element:
         return self.root_node
 
+    def branch_with_id(self, node_id):
+        # horrible but it works
+        for branch in self.all_branches():
+            if branch.node_id == node_id:
+                return branch
+
+    def all_branches(self):
+        return self.root().all_branches()
+
 
 class Branch(MapElement):
     def __init__(self, element: Optional[Element] = None):
@@ -124,26 +119,41 @@ class Branch(MapElement):
     def branch(self, index):
         return self.branches()[index]
 
+    def find_rich_content_for(self, node_type) -> Optional[RichText]:
+        rc = self.find_rich_content_element(node_type)
+        if rc is None:
+            return None
+        html = rc.find('html')
+        text = etree.tostring(html)
+        rt = RichText()
+        rt.html = text.decode('utf-8')
+        return rt
+
+    def find_rich_content_element(self, node_type):
+        rc = self.element.find('richcontent[@TYPE="%s"]' % node_type)
+        return rc
+
     def has_rich_content(self) -> bool:
-        return find_rich_content_in(self.element, 'NODE') is not None
+        return self.find_rich_content_for('NODE') is not None
+
     @property
     def modified(self) -> int:
         """The timestamp (in ms) when this branch was last modified.
 
         There is no setter, as the value is changed only by changing some other property
         """
-        return int(self.get('MODIFIED'))
+        return int(self.get(MODIFIED))
 
     @property
     def created(self) -> int:
         """ The timestamp (in ms) when this branch was created."""
         # no setter, as the value is only set (indirectly) in the constructor.
-        return int(self.get('CREATED'))
+        return int(self.get(CREATED))
 
     @property
     def details(self) -> RichText:
         """The details of a node"""
-        return find_rich_content_in(self.element,'DETAILS')
+        return self.find_rich_content_for(DETAILS)
 
     # def localized_text(self):
 
@@ -164,7 +174,7 @@ class Branch(MapElement):
         """
         result = self._get_text()
         if result is None:
-            result = find_rich_content_in(self.element, NODE).markdown
+            result = self.find_rich_content_for(NODE).markdown
         return result
 
     @text.setter
@@ -180,13 +190,24 @@ class Branch(MapElement):
     def rich_content(self) -> RichText:
         result = self._get_text()
         if result is None:
-            result = find_rich_content_in(self.element, NODE)
+            result = self.find_rich_content_for(NODE)
         else:
             rt = RichText()
             rt.markdown = result
             result = rt
         return result
 
+    @rich_content.setter
+    def rich_content(self, new_content):
+        result = self._get_text()
+        if result is not None:
+            del self.element.attrib[TEXT]
+            del self.element.attrib[LOCALIZED_TEXT]
+        else:
+            self.remove_node_rich_content()
+        rt = RichText()
+        rt.markdown = new_content
+        self.add_node_rich_content(rt)
 
 
     @property
@@ -196,11 +217,11 @@ class Branch(MapElement):
     @property
     def link(self) -> str:
         """returns the hyperlink of a node."""
-        return self.get('LINK')
+        return self.get(LINK)
 
     @link.setter
     def link(self, value: str):
-        self.set('LINK', value)
+        self.set(LINK, value)
 
     @property
     def note(self) -> RichText:
@@ -208,20 +229,20 @@ class Branch(MapElement):
 
         :return: rich text from note
         """
-        return find_rich_content_in(self.element,'NOTE')
+        return self.find_rich_content_for(NOTE)
 
     def set_text(self, text):
-        self.set('TEXT', text)
+        self.set(TEXT, text)
 
     def set_link(self, link):
-        self.set('LINK',link)
+        self.set(LINK,link)
 
     def set_icons(self, icons):
-        self.set('ICONS', icons if icons else [])
+        self.set(ICONS, icons if icons else [])
 
     def set(self, name, value):
         self.element.set(name,value)
-        if name not in [MODIFIED, 'ID']:
+        if name not in [MODIFIED, ID]:
             self._update_modified()
 
     def _update_modified(self):
@@ -229,13 +250,24 @@ class Branch(MapElement):
 
     @property
     def node_id(self) -> Optional[str]:
-        return self.get('ID')
+        return self.get(ID)
 
     def get(self, name) -> Optional[str]:
         if name in self.element.attrib:
             return self.element.get(name)
         return None
 
+    def all_branches(self):
+        result = [self]
+        for branch in self.branches():
+            result += branch.all_branches()
+        return result
 
+    def remove_node_rich_content(self):
+        rc = self.find_rich_content_element(NODE)
+        if rc is not None:
+            self.element.remove(rc)
 
+    def add_node_rich_content(self, rt: RichText):
+        self.element.append(rt.html_element)
 
