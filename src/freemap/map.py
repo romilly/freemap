@@ -198,17 +198,18 @@ class Branch(MapElement):
         return result
 
     @rich_content.setter
-    def rich_content(self, new_content):
+    def rich_content(self, new_content: str):
         result = self._get_text()
         if result is not None:
-            del self.element.attrib[TEXT]
-            del self.element.attrib[LOCALIZED_TEXT]
+            if TEXT in self.element.attrib:
+                del self.element.attrib[TEXT]
+            if LOCALIZED_TEXT in self.element.attrib:
+                del self.element.attrib[LOCALIZED_TEXT]
         else:
-            self.remove_node_rich_content()
+            self.remove_rich_content(NODE)
         rt = RichText()
         rt.markdown = new_content
         self.add_node_rich_content(rt)
-
 
     @property
     def icons(self) -> List[Icon]:
@@ -263,11 +264,11 @@ class Branch(MapElement):
             result += branch.all_branches()
         return result
 
-    def remove_node_rich_content(self):
-        rc = self.find_rich_content_element(NODE)
+    def remove_rich_content(self, type):
+        rc = self.find_rich_content_element(type)
         if rc is not None:
             self.element.remove(rc)
 
     def add_node_rich_content(self, rt: RichText):
-        self.element.append(rt.html_element)
+        self.element.append(rt.html_element(NODE))
 

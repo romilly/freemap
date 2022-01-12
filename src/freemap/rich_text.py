@@ -15,7 +15,7 @@ class RichText:
         self._markdown = ''
 
     @property
-    def markdown(self):
+    def markdown(self) -> str:
         return self._markdown
 
     @markdown.setter
@@ -32,10 +32,9 @@ class RichText:
         self._html = html_text
         self._markdown = html2text.html2text(html_text).strip()
 
-    @property
-    def html_element(self) -> Element:
+    def html_element(self, type: str) -> Element:
         rc = Element('richcontent')
-        rc.attrib['TYPE'] = NODE
+        rc.attrib['TYPE'] = type
         html = SubElement(rc, 'html')
         SubElement(html, 'head')
         body = SubElement(html, 'body')

@@ -68,6 +68,10 @@ class BranchTester(unittest.TestCase):
     def test_sets_rich_content(self):
         self.branch_with_rich_content.rich_content = 'Ho!'
         assert_that(self.branch_with_rich_content.rich_content.markdown, equal_to('Ho!'))
+        self.branch_with_text.rich_content = 'Hi!'
+        assert_that(self.branch_with_text.rich_content.markdown, equal_to('Hi!'))
+        self.branch_with_localized_text.rich_content = 'Hum!'
+        assert_that(self.branch_with_localized_text.rich_content.markdown, equal_to('Hum!'))
 
     def test_retrieves_note(self):
         branch = Branch.from_string('<node><richcontent '
