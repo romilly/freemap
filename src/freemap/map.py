@@ -223,8 +223,9 @@ class Branch(MapElement):
     def icons(self) -> List[Icon]:
         return icons_in(self.element)
 
-    def add_icon(self, icon: Icon):
-        SubElement(self.element, 'icon', BUILTIN=icon.name)
+    def add_icons(self, *icons: Icon):
+        for icon in icons:
+            SubElement(self.element, 'icon', BUILTIN=icon.name)
 
 
     @property

@@ -108,7 +108,7 @@ class BranchTester(unittest.TestCase):
         assert_that(self.branch_with_icons.icons, contains_exactly(Icons.icon('button_ok'),Icons.icon('full-1')))
 
     def test_adds_icons(self):
-        self.branch_with_icons.add_icon(Icons.icon('full-2'))
+        self.branch_with_icons.add_icons(Icons.icon('full-2'))
         assert_that(self.branch_with_icons.icons, contains_exactly(
             Icons.icon('button_ok'),
             Icons.icon('full-1'),
