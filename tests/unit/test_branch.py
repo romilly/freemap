@@ -114,6 +114,10 @@ class BranchTester(unittest.TestCase):
             Icons.icon('full-1'),
             Icons.icon('full-2')))
 
+    def test_removes_icons(self):
+        self.branch_with_icons.remove_icons(Icons.icon('button_ok'), Icons.icon('full-1'))
+        assert_that(len(self.branch_with_icons.icons), equal_to(0))
+
 
 
 

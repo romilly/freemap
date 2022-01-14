@@ -227,6 +227,11 @@ class Branch(MapElement):
         for icon in icons:
             SubElement(self.element, 'icon', BUILTIN=icon.name)
 
+    def remove_icons(self, *icons):
+        for icon in icons:
+            i = self.element.find('icon[@BUILTIN="%s"]' % icon.name)
+            if i is not None:
+                self.element.remove(i)
 
     @property
     def link(self) -> str:
