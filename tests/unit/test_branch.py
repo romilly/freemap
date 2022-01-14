@@ -18,6 +18,7 @@ class BranchTester(unittest.TestCase):
             '<node><richcontent TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
         self.branch_with_details = Branch.from_string('<node><richcontent '
                                     'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
+        self.branch_with_icons = Branch.from_string('<node><icon BUILTIN="button_ok"/><icon BUILTIN="full-1"/></node>')
 
     def test_knows_when_created(self):
         before = self.now()
@@ -104,8 +105,14 @@ class BranchTester(unittest.TestCase):
         assert_that(branch.link, equal_to('boo!'))
 
     def test_reads_icons(self):
-        branch = Branch.from_string('<node><icon BUILTIN="button_ok"/></node>')
-        assert_that(branch.icons, contains_exactly(Icons.icon('button_ok')))
+        assert_that(self.branch_with_icons.icons, contains_exactly(Icons.icon('button_ok'),Icons.icon('full-1')))
+
+    def test_adds_icons(self):
+        self.branch_with_icons.add_icon(Icons.icon('full-2'))
+        assert_that(self.branch_with_icons.icons, contains_exactly(
+            Icons.icon('button_ok'),
+            Icons.icon('full-1'),
+            Icons.icon('full-2')))
 
 
 

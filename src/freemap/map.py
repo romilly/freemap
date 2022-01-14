@@ -44,6 +44,10 @@ class Icon:
     def __init__(self, name):
         self._name = name
 
+    @property
+    def name(self):
+        return self._name
+
 
 class Icons(object):
     icon_dict = {}
@@ -218,6 +222,10 @@ class Branch(MapElement):
     @property
     def icons(self) -> List[Icon]:
         return icons_in(self.element)
+
+    def add_icon(self, icon: Icon):
+        SubElement(self.element, 'icon', BUILTIN=icon.name)
+
 
     @property
     def link(self) -> str:
