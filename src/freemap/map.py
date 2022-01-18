@@ -5,7 +5,7 @@ from typing import Optional, List
 from lxml import etree
 from lxml.etree import tostring, Element, SubElement
 
-from freemap.attributes import LOCALIZED_TEXT, TEXT, NODE, MODIFIED, BUILTIN, DETAILS, CREATED, LINK, NOTE, ICONS, ID
+from freemap.attributes import *
 from freemap.helpers.base_map import minimal_map
 from freemap.rich_text import RichText
 from freemap.uuids import UUIDGenerator
@@ -77,6 +77,14 @@ class MapElement(ABC):
 
     def as_text(self) -> str:
         return tostring(self.element).decode('utf-8')
+
+    def get(self, name) -> Optional[str]:
+        if name in self.element.attrib:
+            return self.element.get(name)
+        return None
+
+    def set(self, name, value):
+        self.element.set(name,value)
 
 
 class Map(MapElement):
@@ -265,7 +273,7 @@ class Branch(MapElement):
         self.set(ICONS, icons if icons else [])
 
     def set(self, name, value):
-        self.element.set(name,value)
+        MapElement.set(self, name, value)
         if name not in [MODIFIED, ID]:
             self._update_modified()
 
@@ -274,12 +282,9 @@ class Branch(MapElement):
 
     @property
     def node_id(self) -> Optional[str]:
+        """Unique id that identifies the node"""
         return self.get(ID)
 
-    def get(self, name) -> Optional[str]:
-        if name in self.element.attrib:
-            return self.element.get(name)
-        return None
 
     def all_branches(self):
         result = [self]
@@ -296,4 +301,49 @@ class Branch(MapElement):
         rt = RichText()
         rt.markdown = new_content
         self.element.append(rt.html_element(node_type))
+
+class Connection(MapElement):
+
+    def set_default_element(self):
+        self.element = Element('node')
+
+    @property
+    def source_label(self):
+        return self.get(SOURCE_LABEL)
+
+    @source_label.setter
+    def source_label(self, label: str):
+        self.set(SOURCE_LABEL, label)
+
+    @property
+    def middle_label(self):
+        return self.get(MIDDLE_LABEL)
+
+    @middle_label.setter
+    def middle_label(self, label: str):
+        self.set(MIDDLE_LABEL, label)
+
+    @property
+    def target_label(self):
+        return self.get(TARGET_LABEL)
+
+    @target_label.setter
+    def target_label(self, label: str):
+        self.set(TARGET_LABEL, label)
+
+    @property
+    def start_inclination(self):
+        return self.get(STARTINCLINATION)
+
+    @start_inclination.setter
+    def start_inclination(self, coordinates: str):
+        self.set(STARTINCLINATION, coordinates)
+
+    @property
+    def end_inclination(self):
+        return self.get(ENDINCLINATION)
+
+    @end_inclination.setter
+    def end_inclination(self, coordinates: str):
+        self.set(ENDINCLINATION, coordinates)
 

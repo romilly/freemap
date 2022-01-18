@@ -1,0 +1,17 @@
+
+<arrowlink
+        SHAPE="CUBIC_CURVE"
+        COLOR="#000000"
+        WIDTH="2"
+        TRANSPARENCY="200"
+        FONT_SIZE="9"
+        FONT_FAMILY="SansSerif"
+        DESTINATION="ID_267952481"
+        SOURCE_LABEL="source"
+        TARGET_LABEL="target"
+        MIDDLE_LABEL="middle"
+        STARTINCLINATION="136;0;"
+        ENDINCLINATION="147;0;"
+        STARTARROW="NONE"
+        ENDARROW="DEFAULT"/>
+
