@@ -120,3 +120,18 @@ Time to check that this is useful and start reaping some value.
 
 I'm going to spike a check of my `active projects` mind map, verifying that the links are correct and complete.
 
+
+## Wednesday 19 January 2022
+
+Lots of progress. I'm exploring connections between branches, and I think that a `Branch` should know its 
+parent branch (if any) and should know the Map that it's part of.
+
+I am going to see if I can make this change as a refactoring without breaking tests.
+
+So:
+1. Commit as I can revert if all goes wrong.
+2. Add optional Map to branch constructor.
+3. Add map as field.
+4. Handle `from_tstring`
+   1. review
+

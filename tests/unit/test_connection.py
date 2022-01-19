@@ -37,6 +37,5 @@ class ConnectionTestCase(unittest.TestCase):
         assert_that(self.connection.end_inclination, equal_to('0;135;'))
 
 
-
 if __name__ == '__main__':
     unittest.main()
