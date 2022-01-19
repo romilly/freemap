@@ -130,8 +130,8 @@ I am going to see if I can make this change as a refactoring without breaking te
 
 So:
 1. Commit as I can revert if all goes wrong.
-2. Add optional Map to branch constructor.
-3. Add map as field.
-4. Handle `from_tstring`
+2. Add optional Map, parent to branch constructor.
+3. Add map, parent as field.
+4. Handle `from_string`
    1. review
 

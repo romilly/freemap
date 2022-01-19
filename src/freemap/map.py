@@ -70,11 +70,6 @@ class MapElement(ABC):
     def set_default_element(self):
         pass
 
-    @classmethod
-    def from_string(cls, map_text: str):
-        element = etree.XML(map_text)  # root is a map element
-        return cls(element)
-
     def as_text(self) -> str:
         return tostring(self.element).decode('utf-8')
 
@@ -94,6 +89,11 @@ class Map(MapElement):
         self.root_node = build_node_from(root_node_xml)
         add_children_from_xml(root_node_xml, self.root_node)
 
+    @classmethod
+    def from_string(cls, map_text: str):
+        element = etree.XML(map_text)
+        return cls(element)
+
     def set_default_element(self):
         self.element = etree.XML(minimal_map)
 
@@ -111,9 +111,18 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, element: Optional[Element] = None):
+    def __init__(self, element: Optional[Element] = None,
+                 map: Optional[Map] = None,
+                 parent: Optional['Branch'] = None):
         MapElement.__init__(self, element)
         self._children = [] # the children will get added by the map if building a map
+
+    @classmethod
+    def from_string(cls, branch_text: str, map: Optional[Map] = None,  parent: Optional['Branch'] = None):
+        element = etree.XML(branch_text)
+        return cls(element, map, parent)
+
+
 
     def set_default_element(self):
         self.element = Element('node')
@@ -122,7 +131,7 @@ class Branch(MapElement):
 
     def add_child(self, branch):
         self._children.append(branch)
-        # TODO: add a test, then add self._update_modified()
+        # TODO: add a failing test, then add self._update_modified()
         return branch
 
     def branches(self):
@@ -285,7 +294,6 @@ class Branch(MapElement):
         """Unique id that identifies the node"""
         return self.get(ID)
 
-
     def all_branches(self):
         result = [self]
         for branch in self.branches():
@@ -302,10 +310,15 @@ class Branch(MapElement):
         rt.markdown = new_content
         self.element.append(rt.html_element(node_type))
 
-class Connection(MapElement):
 
+class Connection(MapElement):
     def set_default_element(self):
         self.element = Element('node')
+
+    @classmethod
+    def from_string(cls, map_text: str):
+        element = etree.XML(map_text)
+        return cls(element)
 
     @property
     def source_label(self):
