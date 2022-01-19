@@ -3,7 +3,7 @@ from datetime import datetime as dt
 
 from hamcrest import assert_that, equal_to, contains_exactly
 
-from freemap.map import Branch, Icons
+from freemap.map import Branch, Icons, Map
 from helpers.matchers import between
 
 
@@ -22,7 +22,7 @@ class BranchTester(unittest.TestCase):
 
     def test_knows_when_created(self):
         before = self.now()
-        branch = Branch()
+        branch = Branch(Map())
         after = self.now()
         created = branch.created
         assert_that(created, between(before, after))
@@ -33,7 +33,7 @@ class BranchTester(unittest.TestCase):
         assert_that(branch.node_id, equal_to(node_id))
 
     def test_knows_when_attribute_modified(self):
-        branch = Branch()
+        branch = Branch(Map())
         t1 = self.now()
         branch.set_link('foo')
         t2 = self.now()

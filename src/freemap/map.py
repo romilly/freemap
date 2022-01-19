@@ -22,17 +22,17 @@ def timestamp_in_millis(dt: datetime):
     return round(dt.timestamp()*1000)
 
 
-def build_node_from(element: Element):
+def build_node_from(element: Element, mmap: 'Map'):
     if element.tag == 'node':
-        return Branch(element=element)
+        return Branch(mmap, element)
 
 
-def add_children_from_xml(xml_node, parent):
+def add_children_from_xml(xml_node, parent, mmap: 'Map'):
     for child_xml in xml_node:
         if child_xml.tag == 'node':
-            new_branch = build_node_from(child_xml)
+            new_branch = build_node_from(child_xml, mmap)
             child = parent.add_child(new_branch)
-            add_children_from_xml(child_xml, child)
+            add_children_from_xml(child_xml, child, mmap)
     return parent
 
 
@@ -86,8 +86,8 @@ class Map(MapElement):
     def __init__(self, element: Optional[Element] = None):
         MapElement.__init__(self, element)
         root_node_xml = self.element.find('node')
-        self.root_node = build_node_from(root_node_xml)
-        add_children_from_xml(root_node_xml, self.root_node)
+        self.root_node = build_node_from(root_node_xml, self)
+        add_children_from_xml(root_node_xml, self.root_node, self)
 
     @classmethod
     def from_string(cls, map_text: str):
@@ -111,7 +111,7 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, mmap: Optional[Map] = None, element: Optional[Element] = None,
+    def __init__(self, mmap: Map, element: Optional[Element] = None,
                  parent: Optional['Branch'] = None):
         MapElement.__init__(self, element)
         self.mmap = mmap
