@@ -10,15 +10,15 @@ from helpers.matchers import between
 class BranchTester(unittest.TestCase):
     def setUp(self):
         self.ts = 'CREATED="1541258689450" MODIFIED="1541353381000"'
-        self.branch_with_text = Branch.from_string('<node TEXT="text"/>')
-        self.branch_with_localized_text = Branch.from_string('<node LOCALIZED_TEXT="localized"/>')
-        self.branch_with_rich_content = Branch.from_string(
+        self.branch_with_text = Branch.for_tests_from_string('<node TEXT="text"/>')
+        self.branch_with_localized_text = Branch.for_tests_from_string('<node LOCALIZED_TEXT="localized"/>')
+        self.branch_with_rich_content = Branch.for_tests_from_string(
             '<node><richcontent TYPE="NODE"><html><body><p>Ha!</p></body></html></richcontent></node>')
-        self.branch_with_note = Branch.from_string(
+        self.branch_with_note = Branch.for_tests_from_string(
             '<node><richcontent TYPE="NOTE"><html><body><p>Hi!</p></body></html></richcontent></node>')
-        self.branch_with_details = Branch.from_string('<node><richcontent '
+        self.branch_with_details = Branch.for_tests_from_string('<node><richcontent '
                                     'TYPE="DETAILS"><html><body><p>Who!</p></body></html></richcontent></node>')
-        self.branch_with_icons = Branch.from_string('<node><icon BUILTIN="button_ok"/><icon BUILTIN="full-1"/></node>')
+        self.branch_with_icons = Branch.for_tests_from_string('<node><icon BUILTIN="button_ok"/><icon BUILTIN="full-1"/></node>')
 
     def test_knows_when_created(self):
         before = self.now()
@@ -29,7 +29,7 @@ class BranchTester(unittest.TestCase):
 
     def test_uses_node_id_if_present(self):
         node_id = "Freemind_Link_1331878192"
-        branch = Branch.from_string('<node ID="{nid}" {ts}/>'.format(nid=node_id, ts=self.ts))
+        branch = Branch.for_tests_from_string('<node ID="{nid}" {ts}/>'.format(nid=node_id, ts=self.ts))
         assert_that(branch.node_id, equal_to(node_id))
 
     def test_knows_when_attribute_modified(self):
@@ -45,7 +45,7 @@ class BranchTester(unittest.TestCase):
     def test_knows_timestamps(self):
         text = '<node {ts} TEXT="foo"></node>' \
             .format(ts=self.ts)
-        branch = Branch.from_string(text)
+        branch = Branch.for_tests_from_string(text)
         assert_that(branch.created, equal_to(1541258689450))
         assert_that(branch.modified, equal_to(1541353381000))
 
@@ -96,11 +96,11 @@ class BranchTester(unittest.TestCase):
         assert_that(self.branch_with_text.details.markdown, equal_to('interesting details'))
 
     def test_retrieves_link(self):
-        branch = Branch.from_string('<node LINK="foo"/>')
+        branch = Branch.for_tests_from_string('<node LINK="foo"/>')
         assert_that(branch.link, equal_to('foo'))
 
     def test_sets_link(self):
-        branch = Branch.from_string('<node LINK="foo"/>')
+        branch = Branch.for_tests_from_string('<node LINK="foo"/>')
         branch.link = 'boo!'
         assert_that(branch.link, equal_to('boo!'))
 

@@ -118,11 +118,10 @@ class Branch(MapElement):
         self._children = [] # the children will get added by the map if building a map
 
     @classmethod
-    def from_string(cls, branch_text: str, map: Optional[Map] = None,  parent: Optional['Branch'] = None):
+    def for_tests_from_string(cls, branch_text: str, parent: Optional['Branch'] = None):
+        mmap = Map.from_string(minimal_map)
         element = etree.XML(branch_text)
-        return cls(element, map, parent)
-
-
+        return cls(element, mmap, parent)
 
     def set_default_element(self):
         self.element = Element('node')
@@ -181,9 +180,6 @@ class Branch(MapElement):
         self.remove_rich_content(DETAILS)
         self.add_rich_content(new_content, DETAILS)
 
-
-    # def localized_text(self):
-
     def _get_text(self):
         result = None
         if LOCALIZED_TEXT in self.element.attrib:
@@ -191,7 +187,6 @@ class Branch(MapElement):
         elif TEXT in self.element.attrib:
             result = self.get(TEXT)
         return result
-
 
     @property
     def text(self) -> str:

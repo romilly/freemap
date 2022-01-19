@@ -7,10 +7,6 @@ from freemap.helpers.files import read
 from freemap.map import Icons, Map
 from helpers.files import test_file
 
-#TODO: separate unit tests (building from text)  and integration tests (building from file)
-#TODO: add integration tests for link, icons, note, description,text (all three forms)
-# as this checks that we are testing against actual formats.
-#TODO: remove or move map unit tests that should test at the branch level.
 
 class TestMap(unittest.TestCase):
     def setUp(self):
