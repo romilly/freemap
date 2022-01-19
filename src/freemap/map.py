@@ -85,6 +85,7 @@ class MapElement(ABC):
 class Map(MapElement):
     def __init__(self, element: Optional[Element] = None):
         MapElement.__init__(self, element)
+        self._id_map = {}
         root_node_xml = self.element.find('node')
         self.root_node = build_node_from(root_node_xml, self)
         add_children_from_xml(root_node_xml, self.root_node, self)
@@ -94,6 +95,18 @@ class Map(MapElement):
         element = etree.XML(map_text)
         return cls(element)
 
+    def __getitem__(self, key):
+        return self._id_map[key]
+
+    def __setitem__(self, key, value):
+        self._id_map[key] = value
+
+    def __contains__(self, key):
+        return key in self._id_map
+
+    def __len__(self):
+        return len(self._id_map)
+
     def set_default_element(self):
         self.element = etree.XML(minimal_map)
 
@@ -102,9 +115,12 @@ class Map(MapElement):
 
     def branch_with_id(self, node_id):
         # horrible but it works
-        for branch in self.all_branches():
-            if branch.node_id == node_id:
-                return branch
+        # for branch in self.all_branches():
+        #     if branch.node_id == node_id:
+        #         return branch
+        if node_id in self._id_map:
+            return self[node_id]
+        return None
 
     def all_branches(self):
         return self.root().all_branches()
@@ -116,6 +132,8 @@ class Branch(MapElement):
         MapElement.__init__(self, element)
         self.mmap = mmap
         self.parent = parent
+        if self.node_id is not None:
+            mmap[self.node_id] = self
         self._children = [] # the children will get added by the map if building a map
 
     @classmethod
