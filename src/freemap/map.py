@@ -24,7 +24,7 @@ def timestamp_in_millis(dt: datetime):
 
 def build_node_from(element: Element):
     if element.tag == 'node':
-        return Branch(element)
+        return Branch(element=element)
 
 
 def add_children_from_xml(xml_node, parent):
@@ -111,9 +111,7 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self,
-                 element: Optional[Element] = None,
-                 mmap: Optional[Map] = None,
+    def __init__(self, mmap: Optional[Map] = None, element: Optional[Element] = None,
                  parent: Optional['Branch'] = None):
         MapElement.__init__(self, element)
         self.mmap = mmap
@@ -127,7 +125,7 @@ class Branch(MapElement):
         else:
             mmap = parent.mmap
         element = etree.XML(branch_text)
-        return cls(element, mmap, parent)
+        return cls(mmap, element, parent)
 
     def set_default_element(self):
         self.element = Element('node')
