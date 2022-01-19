@@ -111,15 +111,21 @@ class Map(MapElement):
 
 
 class Branch(MapElement):
-    def __init__(self, element: Optional[Element] = None,
-                 map: Optional[Map] = None,
+    def __init__(self,
+                 element: Optional[Element] = None,
+                 mmap: Optional[Map] = None,
                  parent: Optional['Branch'] = None):
         MapElement.__init__(self, element)
+        self.mmap = mmap
+        self.parent = parent
         self._children = [] # the children will get added by the map if building a map
 
     @classmethod
     def for_tests_from_string(cls, branch_text: str, parent: Optional['Branch'] = None):
-        mmap = Map.from_string(minimal_map)
+        if parent is None:
+            mmap = Map.from_string(minimal_map)
+        else:
+            mmap = parent.mmap
         element = etree.XML(branch_text)
         return cls(element, mmap, parent)
 
