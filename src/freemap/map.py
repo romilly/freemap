@@ -114,10 +114,6 @@ class Map(MapElement):
         return self.root_node
 
     def branch_with_id(self, node_id):
-        # horrible but it works
-        # for branch in self.all_branches():
-        #     if branch.node_id == node_id:
-        #         return branch
         if node_id in self._id_map:
             return self[node_id]
         return None
@@ -132,8 +128,9 @@ class Branch(MapElement):
         MapElement.__init__(self, element)
         self.mmap = mmap
         self.parent = parent
-        if self.node_id is not None:
-            mmap[self.node_id] = self
+        if self.node_id is None:
+            self.set('ID', str(UUIDGenerator.next_uuid()))
+        mmap[self.node_id] = self
         self._children = [] # the children will get added by the map if building a map
 
     @classmethod
@@ -147,7 +144,6 @@ class Branch(MapElement):
 
     def set_default_element(self):
         self.element = Element('node')
-        self.set('ID', str(UUIDGenerator.next_uuid()))
         self.set('CREATED', (str(timestamp_in_millis(datetime.now()))))
 
     def add_child(self, branch):

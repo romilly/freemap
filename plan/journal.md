@@ -134,3 +134,5 @@ So:
 3. Handle `from_string`
    1. change Branch `from_string` to `branch_for_tests`, use default map.
 
+
+Tomorrow, make sure all branches have ids and change connection to belong to a branch.
