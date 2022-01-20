@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime as dt
+from time import sleep
 
 from hamcrest import assert_that, equal_to, contains_exactly
 
@@ -38,6 +39,15 @@ class BranchTester(unittest.TestCase):
         branch.set_link('foo')
         t2 = self.now()
         assert_that(branch.modified, between(t1, t2))
+
+    def test_knows_when_child_added(self):
+        mmap = Map()
+        branch = Branch(mmap)
+        t1 = branch.modified
+        sleep(0.01)
+        branch.add_child(Branch(mmap))
+        t2 = branch.modified
+        assert_that(t1 < t2)
 
     def now(self):
         return round(1000 * dt.now().timestamp())

@@ -14,8 +14,5 @@ class WritingTestCase(unittest.TestCase):
             write(mmap.as_text(), test_out)
             assert_xml_equal(test_in, test_out, ignore_timestamps=False)
 
-
-
-
 if __name__ == '__main__':
     unittest.main()

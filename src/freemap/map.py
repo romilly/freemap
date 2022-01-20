@@ -27,12 +27,12 @@ def build_node_from(element: Element, mmap: 'Map'):
         return Branch(mmap, element)
 
 
-def add_children_from_xml(xml_node, parent, mmap: 'Map'):
+def add_children_from_xml(xml_node, parent, mmap: 'Map', update_timestamp = False):
     for child_xml in xml_node:
         if child_xml.tag == 'node':
             new_branch = build_node_from(child_xml, mmap)
-            child = parent.add_child(new_branch)
-            add_children_from_xml(child_xml, child, mmap)
+            child = parent.add_child(new_branch, update_timestamp)
+            add_children_from_xml(child_xml, child, mmap, update_timestamp)
     return parent
 
 
@@ -88,7 +88,7 @@ class Map(MapElement):
         self._id_map = {}
         root_node_xml = self.element.find('node')
         self.root_node = build_node_from(root_node_xml, self)
-        add_children_from_xml(root_node_xml, self.root_node, self)
+        add_children_from_xml(root_node_xml, self.root_node, self, update_timestamp = False)
 
     @classmethod
     def from_string(cls, map_text: str):
@@ -146,9 +146,10 @@ class Branch(MapElement):
         self.element = Element('node')
         self.set('CREATED', (str(timestamp_in_millis(datetime.now()))))
 
-    def add_child(self, branch):
+    def add_child(self, branch, update_timestamp = True):
         self._children.append(branch)
-        # TODO: add a failing test, then add self._update_modified()
+        if update_timestamp:
+            self._update_modified()
         return branch
 
     def branches(self):
