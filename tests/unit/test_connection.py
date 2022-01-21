@@ -8,7 +8,7 @@ from freemap.map import Connection
 
 class ConnectionTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self.connection = Connection.from_string(None, arrowlink)
+        self.connection = Connection.for_tests_from_string(None, arrowlink)
 
     def test_can_create_connection(self):
         assert_that(self.connection, not_none())
