@@ -326,13 +326,17 @@ class Branch(MapElement):
 
 
 class Connection(MapElement):
+    def __init__(self, mmap: Optional[Map] = None, element: Optional[Element] = None):
+        MapElement.__init__(self, element)
+        self.mmap = mmap
+
     def set_default_element(self):
-        self.element = Element('node')
+        self.element = Element('arrowlink')
 
     @classmethod
-    def from_string(cls, map_text: str):
+    def from_string(cls, mmap: Map, map_text: str):
         element = etree.XML(map_text)
-        return cls(element)
+        return cls(mmap, element)
 
     @property
     def source_label(self):

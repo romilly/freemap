@@ -135,4 +135,12 @@ So:
    1. change Branch `from_string` to `branch_for_tests`, use default map.
 
 
-Tomorrow, make sure all branches have ids and change connection to belong to a branch.
+Tomorrow, make sure all branches have ids. 
+
+## Friday 21 January 2022
+
+Change connection to belong to a branch.
+Test that connections are read and written when maps are serialised/deserialised.
+
+
+
