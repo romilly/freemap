@@ -134,11 +134,7 @@ class Branch(MapElement):
         self._children = [] # the children will get added by the map if building a map
 
     @classmethod
-    def for_tests_from_string(cls, branch_text: str, parent: Optional['Branch'] = None):
-        if parent is None:
-            mmap = Map.from_string(minimal_map)
-        else:
-            mmap = parent.mmap
+    def from_string(cls, mmap: Map, branch_text: str, parent: Optional['Branch'] = None):
         element = etree.XML(branch_text)
         return cls(mmap, element, parent)
 
@@ -326,7 +322,7 @@ class Branch(MapElement):
 
 
 class Connection(MapElement):
-    def __init__(self, branch: Optional[Branch] = None, element: Optional[Element] = None):
+    def __init__(self, branch: Branch, element: Optional[Element] = None):
         MapElement.__init__(self, element)
         self.branch = branch
 
@@ -334,7 +330,7 @@ class Connection(MapElement):
         self.element = Element('arrowlink')
 
     @classmethod
-    def for_tests_from_string(cls, branch: Branch, map_text: str):
+    def from_string(cls, branch: Branch, map_text: str):
         element = etree.XML(map_text)
         return cls(branch, element)
 
